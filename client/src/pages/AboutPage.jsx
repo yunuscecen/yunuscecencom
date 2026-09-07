@@ -2,12 +2,22 @@ import { useEffect, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
-import http from "../api/http";
-import { useSiteSettings } from "../context/SiteContext";
 import ManagedImage from "../components/ui/ManagedImage";
+import http from "../api/http";
+import { usePageContent } from "../context/PageContentContext";
+import { useSiteSettings } from "../context/SiteContext";
 
 const AboutPage = () => {
   const { settings } = useSiteSettings();
+
+  const {
+    content: pageContent,
+    loading: pageContentLoading,
+    error: pageContentError,
+  } = usePageContent();
+
+  const copy = pageContent.about || {};
+
   const [about, setAbout] = useState(null);
   const [status, setStatus] = useState("loading");
 
@@ -34,54 +44,8 @@ const AboutPage = () => {
 
     return () => controller.abort();
   }, []);
-useEffect(() => {
-  if (!about) return undefined;
 
-  const previousTitle = document.title;
-  const existingDescription = document.querySelector(
-    'meta[name="description"]'
-  );
-
-  const previousDescription =
-    existingDescription?.getAttribute("content") || "";
-
-  const metaDescription =
-    existingDescription || document.createElement("meta");
-
-  const createdMeta = !existingDescription;
-
-  if (createdMeta) {
-    metaDescription.setAttribute("name", "description");
-    document.head.appendChild(metaDescription);
-  }
-
-  const pageTitle =
-    about.seo?.title ||
-    `${about.title} | ${settings.brand?.name || "Portfolio"}`;
-
-  const pageDescription =
-    about.seo?.description || about.introduction || "";
-
-  document.title = pageTitle;
-
-  if (pageDescription) {
-    metaDescription.setAttribute("content", pageDescription);
-  }
-
-  return () => {
-    document.title = previousTitle;
-
-    if (createdMeta) {
-      metaDescription.remove();
-    } else {
-      metaDescription.setAttribute(
-        "content",
-        previousDescription
-      );
-    }
-  };
-}, [about, settings.brand?.name]);
-  if (status === "loading") {
+  if (status === "loading" || pageContentLoading) {
     return (
       <section className="page-state">
         <span>About / Loading</span>
@@ -90,7 +54,11 @@ useEffect(() => {
     );
   }
 
-  if (status === "error" || !about) {
+  if (
+    status === "error" ||
+    pageContentError ||
+    !about
+  ) {
     return (
       <section className="page-state">
         <span>Connection error</span>
@@ -103,26 +71,29 @@ useEffect(() => {
     <div className="about-page">
       <header className="about-page__hero">
         <p className="section-kicker">
-  {about.eyebrow || "About / Profile"}
-</p>
+          {about.eyebrow || "About / Profile"}
+        </p>
 
         <div className="about-page__heading">
           <h1>{about.title}</h1>
           <p>{about.introduction}</p>
         </div>
 
-      <ManagedImage
-  className="about-portrait"
-  src={about.profileImage?.url}
-  alt={about.profileImage?.alt || settings.brand?.name}
-  label="Portre görseli — 4:5"
-  badge="Profile / 01"
-  loading="eager"
-/>
+        <ManagedImage
+          className="about-portrait"
+          src={about.profileImage?.url}
+          alt={
+            about.profileImage?.alt ||
+            settings.brand?.name
+          }
+          label="Portre görseli — 4:5"
+          badge="Profile / 01"
+          loading="eager"
+        />
       </header>
 
       <section className="about-story">
-        <p className="section-kicker">01 / Story</p>
+        <p className="section-kicker">{copy.storyKicker}</p>
 
         <div>
           {about.story?.map((paragraph, index) => (
@@ -133,13 +104,13 @@ useEffect(() => {
         </div>
 
         <aside>
-          <span>Role</span>
+          <span>{copy.roleLabel}</span>
           <p>{settings.brand?.profession}</p>
 
-          <span>Location</span>
+          <span>{copy.locationLabel}</span>
           <p>{settings.contact?.location}</p>
 
-          <span>Status</span>
+          <span>{copy.statusLabel}</span>
           <p>{settings.contact?.availabilityText}</p>
         </aside>
       </section>
@@ -147,8 +118,11 @@ useEffect(() => {
       {about.skillGroups?.length > 0 && (
         <section className="about-skills">
           <header>
-            <p className="section-kicker">02 / Capabilities</p>
-            <h2>Teknik düşünce ve görsel üretim aynı sistemde.</h2>
+            <p className="section-kicker">
+              {copy.skillsKicker}
+            </p>
+
+            <h2>{copy.skillsTitle}</h2>
           </header>
 
           <div className="skill-groups">
@@ -157,7 +131,10 @@ useEffect(() => {
               .map((group, groupIndex) => (
                 <article key={group._id || group.title}>
                   <span>
-                    {String(groupIndex + 1).padStart(2, "0")}
+                    {String(groupIndex + 1).padStart(
+                      2,
+                      "0"
+                    )}
                   </span>
 
                   <h3>{group.title}</h3>
@@ -176,8 +153,11 @@ useEffect(() => {
       {about.experience?.length > 0 && (
         <section className="experience-section">
           <header>
-            <p className="section-kicker">03 / Experience</p>
-            <h2>Deneyim</h2>
+            <p className="section-kicker">
+              {copy.experienceKicker}
+            </p>
+
+            <h2>{copy.experienceTitle}</h2>
           </header>
 
           <div className="experience-list">
@@ -221,12 +201,15 @@ useEffect(() => {
 
       <section className="inner-cta">
         <div>
-          <p className="section-kicker">Next / Contact</p>
-          <h2>Birlikte yeni bir şey üretelim.</h2>
+          <p className="section-kicker">
+            {copy.ctaKicker}
+          </p>
+
+          <h2>{copy.ctaTitle}</h2>
         </div>
 
         <Link className="light-button" to="/iletisim">
-          İletişime geç
+          {copy.ctaButtonLabel}
           <ArrowUpRight size={15} />
         </Link>
       </section>

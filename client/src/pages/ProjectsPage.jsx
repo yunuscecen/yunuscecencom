@@ -3,6 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import http from "../api/http";
+import { usePageContent } from "../context/PageContentContext";
 
 const categoryLabels = {
   "web-development": "Web Development",
@@ -14,6 +15,14 @@ const categoryLabels = {
 };
 
 const ProjectsPage = () => {
+  const {
+    content: pageContent,
+    loading: pageContentLoading,
+    error: pageContentError,
+  } = usePageContent();
+
+  const copy = pageContent.projects || {};
+
   const [projects, setProjects] = useState([]);
   const [status, setStatus] = useState("loading");
 
@@ -41,101 +50,122 @@ const ProjectsPage = () => {
     return () => controller.abort();
   }, []);
 
+  const isLoading =
+    status === "loading" || pageContentLoading;
+
+  const hasError =
+    status === "error" || pageContentError;
+
   return (
     <div className="projects-page">
       <header className="projects-page__hero">
-        <p className="section-kicker">Selected work / 01</p>
+        <p className="section-kicker">{copy.heroKicker}</p>
 
         <div>
-          <h1>Projeler</h1>
-          <p>
-            Yazılım geliştirme, dijital ürün tasarımı ve görsel
-            iletişimin kesişimindeki seçili çalışmalar.
-          </p>
+          <h1>{copy.title}</h1>
+          <p>{copy.description}</p>
         </div>
 
         <span>
           {status === "success"
-            ? `${String(projects.length).padStart(2, "0")} proje`
-            : "Yükleniyor"}
+            ? `${String(projects.length).padStart(2, "0")} ${
+                copy.countSuffix
+              }`
+            : copy.loadingText}
         </span>
       </header>
 
-      {status === "loading" && (
+      {isLoading && (
         <section className="catalog-state">
           <span />
-          <p>Projeler yükleniyor.</p>
+          <p>{copy.loadingText || "Projeler yükleniyor."}</p>
         </section>
       )}
 
-      {status === "error" && (
+      {hasError && (
         <section className="catalog-state">
-          <p>Projeler şu anda yüklenemiyor.</p>
-        </section>
-      )}
-
-      {status === "success" && projects.length === 0 && (
-        <section className="empty-projects">
-          <div className="empty-projects__visual" aria-hidden="true">
-            <span />
-            <span />
-            <span />
-          </div>
-
-          <p className="section-kicker">Archive / Empty</p>
-          <h2>Seçili projeler hazırlanıyor.</h2>
           <p>
-            Geliştirme ve tasarım çalışmalarından oluşan proje
-            arşivi yakında burada yer alacak.
+            {copy.errorText ||
+              "Projeler şu anda yüklenemiyor."}
           </p>
         </section>
       )}
 
-      {status === "success" && projects.length > 0 && (
-        <section className="project-catalog">
-          {projects.map((project, index) => (
-            <Link
-              className="catalog-card"
-              to={`/projeler/${project.slug}`}
-              key={project._id}
+      {!hasError &&
+        status === "success" &&
+        projects.length === 0 && (
+          <section className="empty-projects">
+            <div
+              className="empty-projects__visual"
+              aria-hidden="true"
             >
-              <div className="catalog-card__image">
-                <img
-                  src={project.coverImage?.url}
-                  alt={project.coverImage?.alt}
-                  loading={index > 1 ? "lazy" : "eager"}
-                />
+              <span />
+              <span />
+              <span />
+            </div>
 
-                <span>
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-              </div>
+            <p className="section-kicker">
+              {copy.emptyKicker}
+            </p>
 
-              <div className="catalog-card__heading">
-                <div>
-                  <p>
-                    {categoryLabels[project.category] ||
-                      project.category}
-                  </p>
-                  <h2>{project.title}</h2>
+            <h2>{copy.emptyTitle}</h2>
+            <p>{copy.emptyDescription}</p>
+          </section>
+        )}
+
+      {!hasError &&
+        status === "success" &&
+        projects.length > 0 && (
+          <section className="project-catalog">
+            {projects.map((project, index) => (
+              <Link
+                className="catalog-card"
+                to={`/projeler/${project.slug}`}
+                key={project._id}
+              >
+                <div className="catalog-card__image">
+                  <img
+                    src={project.coverImage?.url}
+                    alt={
+                      project.coverImage?.alt ||
+                      project.title
+                    }
+                    loading={index > 1 ? "lazy" : "eager"}
+                  />
+
+                  <span>
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
                 </div>
 
-                <ArrowUpRight aria-hidden="true" />
-              </div>
+                <div className="catalog-card__heading">
+                  <div>
+                    <p>
+                      {categoryLabels[project.category] ||
+                        project.category}
+                    </p>
 
-              <p className="catalog-card__description">
-                {project.shortDescription}
-              </p>
+                    <h2>{project.title}</h2>
+                  </div>
 
-              <div className="catalog-card__tools">
-                {project.technologies?.slice(0, 4).map((tool) => (
-                  <span key={tool}>{tool}</span>
-                ))}
-              </div>
-            </Link>
-          ))}
-        </section>
-      )}
+                  <ArrowUpRight aria-hidden="true" />
+                </div>
+
+                <p className="catalog-card__description">
+                  {project.shortDescription}
+                </p>
+
+                <div className="catalog-card__tools">
+                  {project.technologies
+                    ?.slice(0, 4)
+                    .map((tool) => (
+                      <span key={tool}>{tool}</span>
+                    ))}
+                </div>
+              </Link>
+            ))}
+          </section>
+        )}
     </div>
   );
 };

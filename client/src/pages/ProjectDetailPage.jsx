@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowUpRight,
+} from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 
 import http from "../api/http";
+import { usePageContent } from "../context/PageContentContext";
+import { useSiteSettings } from "../context/SiteContext";
 
 const categoryLabels = {
   "web-development": "Web Development",
@@ -15,6 +20,15 @@ const categoryLabels = {
 
 const ProjectDetailPage = () => {
   const { slug } = useParams();
+  const { settings } = useSiteSettings();
+
+  const {
+    content: pageContent,
+    loading: pageContentLoading,
+    error: pageContentError,
+  } = usePageContent();
+
+  const copy = pageContent.projectDetail || {};
 
   const [project, setProject] = useState(null);
   const [status, setStatus] = useState("loading");
@@ -26,17 +40,23 @@ const ProjectDetailPage = () => {
       setStatus("loading");
 
       try {
-        const response = await http.get(`/projects/${slug}`, {
-          signal: controller.signal,
-        });
+        const response = await http.get(
+          `/projects/${slug}`,
+          {
+            signal: controller.signal,
+          }
+        );
 
         setProject(response.data.data);
         setStatus("success");
       } catch (error) {
         if (error.code !== "ERR_CANCELED") {
           console.error(error);
+
           setStatus(
-            error.response?.status === 404 ? "not-found" : "error"
+            error.response?.status === 404
+              ? "not-found"
+              : "error"
           );
         }
       }
@@ -53,17 +73,19 @@ const ProjectDetailPage = () => {
     }
 
     const previousTitle = document.title;
+    const brandName =
+      settings.brand?.name || "Yunus Çeçen";
 
     document.title =
       project.seo?.title ||
-      `${project.title} | Yunus Çeçen`;
+      `${project.title} | ${brandName}`;
 
     return () => {
       document.title = previousTitle;
     };
-  }, [project]);
+  }, [project, settings.brand?.name]);
 
-  if (status === "loading") {
+  if (status === "loading" || pageContentLoading) {
     return (
       <section className="page-state">
         <span>Project / Loading</span>
@@ -72,18 +94,26 @@ const ProjectDetailPage = () => {
     );
   }
 
-  if (status === "error" || status === "not-found" || !project) {
+  if (
+    status === "error" ||
+    status === "not-found" ||
+    pageContentError ||
+    !project
+  ) {
+    const notFound = status === "not-found";
+
     return (
       <section className="page-state">
-        <span>{status === "not-found" ? "404" : "Error"}</span>
+        <span>{notFound ? "404" : "Error"}</span>
+
         <h1>
-          {status === "not-found"
+          {notFound
             ? "Proje bulunamadı."
             : "Proje yüklenemedi."}
         </h1>
 
         <Link className="light-button" to="/projeler">
-          Projelere dön
+          {copy.backLabel || "Projelere dön"}
         </Link>
       </section>
     );
@@ -91,15 +121,15 @@ const ProjectDetailPage = () => {
 
   const externalLinks = [
     {
-      label: "Canlı proje",
+      label: copy.liveLinkLabel,
       url: project.links?.live,
     },
     {
-      label: "GitHub",
+      label: copy.githubLinkLabel,
       url: project.links?.github,
     },
     {
-      label: "Behance",
+      label: copy.behanceLinkLabel,
       url: project.links?.behance,
     },
   ].filter((item) => item.url);
@@ -109,55 +139,60 @@ const ProjectDetailPage = () => {
       <header className="project-detail__hero">
         <Link className="back-link" to="/projeler">
           <ArrowLeft size={16} />
-          Tüm projeler
+          {copy.backLabel}
         </Link>
 
         <div>
           <p className="section-kicker">
-            {categoryLabels[project.category] || project.category}
+            {categoryLabels[project.category] ||
+              project.category}
           </p>
 
           <h1>{project.title}</h1>
           <p>{project.shortDescription}</p>
         </div>
 
-        <span className="project-detail__year">
-          {project.year || "Selected work"}
-        </span>
+        {project.year && (
+          <span className="project-detail__year">
+            {project.year}
+          </span>
+        )}
       </header>
 
       <div className="project-detail__cover">
         <img
           src={project.coverImage?.url}
-          alt={project.coverImage?.alt}
+          alt={
+            project.coverImage?.alt || project.title
+          }
         />
       </div>
 
       <section className="project-facts">
         {project.client && (
           <div>
-            <span>Client</span>
+            <span>{copy.clientLabel}</span>
             <p>{project.client}</p>
           </div>
         )}
 
         {project.year && (
           <div>
-            <span>Year</span>
+            <span>{copy.yearLabel}</span>
             <p>{project.year}</p>
           </div>
         )}
 
         {project.services?.length > 0 && (
           <div>
-            <span>Services</span>
+            <span>{copy.servicesLabel}</span>
             <p>{project.services.join(", ")}</p>
           </div>
         )}
 
         {project.technologies?.length > 0 && (
           <div>
-            <span>Technology</span>
+            <span>{copy.technologyLabel}</span>
             <p>{project.technologies.join(", ")}</p>
           </div>
         )}
@@ -165,14 +200,20 @@ const ProjectDetailPage = () => {
 
       {project.description?.length > 0 && (
         <section className="project-narrative">
-          <p className="section-kicker">Project overview</p>
+          <p className="section-kicker">
+            {copy.overviewKicker}
+          </p>
 
           <div>
-            {project.description.map((paragraph, index) => (
-              <p key={`${paragraph.slice(0, 20)}-${index}`}>
-                {paragraph}
-              </p>
-            ))}
+            {project.description.map(
+              (paragraph, index) => (
+                <p
+                  key={`${paragraph.slice(0, 20)}-${index}`}
+                >
+                  {paragraph}
+                </p>
+              )
+            )}
           </div>
         </section>
       )}
@@ -181,16 +222,16 @@ const ProjectDetailPage = () => {
         <section className="project-case-grid">
           {project.challenge && (
             <article>
-              <span>01 / Challenge</span>
-              <h2>Problem</h2>
+              <span>{copy.challengeKicker}</span>
+              <h2>{copy.challengeTitle}</h2>
               <p>{project.challenge}</p>
             </article>
           )}
 
           {project.solution && (
             <article>
-              <span>02 / Solution</span>
-              <h2>Yaklaşım</h2>
+              <span>{copy.solutionKicker}</span>
+              <h2>{copy.solutionTitle}</h2>
               <p>{project.solution}</p>
             </article>
           )}
@@ -200,15 +241,18 @@ const ProjectDetailPage = () => {
       {project.gallery?.length > 0 && (
         <section className="project-gallery">
           {project.gallery.map((image, index) => (
-            <figure key={image._id || `${image.url}-${index}`}>
+            <figure
+              key={image._id || `${image.url}-${index}`}
+            >
               <img
                 src={image.url}
-                alt={image.alt}
+                alt={image.alt || project.title}
                 loading="lazy"
               />
 
               <figcaption>
-                {String(index + 1).padStart(2, "0")} / Project image
+                {String(index + 1).padStart(2, "0")} /{" "}
+                {copy.galleryCaption}
               </figcaption>
             </figure>
           ))}
@@ -217,10 +261,12 @@ const ProjectDetailPage = () => {
 
       {project.results?.length > 0 && (
         <section className="project-results">
-          <p className="section-kicker">03 / Results</p>
+          <p className="section-kicker">
+            {copy.resultsKicker}
+          </p>
 
           <div>
-            <h2>Ortaya çıkan sonuçlar</h2>
+            <h2>{copy.resultsTitle}</h2>
 
             <ul>
               {project.results.map((result) => (
@@ -233,7 +279,7 @@ const ProjectDetailPage = () => {
 
       {externalLinks.length > 0 && (
         <section className="project-links">
-          <p>Projeyi görüntüle</p>
+          <p>{copy.linksTitle}</p>
 
           <div>
             {externalLinks.map((link) => (
