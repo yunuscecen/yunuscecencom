@@ -209,10 +209,21 @@ return (
             </div>
 
             <div className="showcase__identity">
-              <p>{home.hero?.eyebrow}</p>
-              <h1>{settings.brand?.name}</h1>
-              <span>{settings.brand?.profession}</span>
-            </div>
+  <p>{home.hero?.eyebrow}</p>
+
+  <h1>{settings.brand?.name}</h1>
+
+  <div className="showcase__portrait">
+    <img
+      src="/yunuscecen.jpeg"
+      alt="Yunus Çeçen"
+      width="96"
+      height="96"
+    />
+  </div>
+
+  <span>{settings.brand?.profession}</span>
+</div>
 
             <div className="showcase__actions">
               <Link
@@ -516,8 +527,14 @@ return (
           <div className="process-grid">
             {[...(home.processSteps || [])]
               .sort((a, b) => a.order - b.order)
-              .map((step) => (
-                <article key={step._id || step.number}>
+              .map((step, index) => (
+  <article
+    key={step._id || step.number}
+    style={{
+      "--process-hue": `${(212 + index * 43) % 360}`,
+      "--process-hue-alt": `${(258 + index * 43) % 360}`,
+    }}
+  >
                   <span>{step.number}</span>
                   <h3>{step.title}</h3>
                   <p>{step.description}</p>
