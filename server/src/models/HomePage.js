@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 const mediaSchema = new mongoose.Schema(
   {
     url: {
@@ -103,19 +104,17 @@ const homePageSchema = new mongoose.Schema(
       unique: true,
       immutable: true,
     },
+
     hero: {
       eyebrow: {
         type: String,
         default: "Freelance Developer & Designer",
         trim: true,
       },
-      featuredMedia: {
-  type: mediaSchema,
-  default: () => ({}),
-},
       title: {
         type: String,
-        default: "Kod ve tasarım arasında dijital deneyimler üretiyorum.",
+        default:
+          "Kod ve tasarım arasında dijital deneyimler üretiyorum.",
         trim: true,
       },
       highlightedText: {
@@ -143,6 +142,12 @@ const homePageSchema = new mongoose.Schema(
         },
       },
     },
+
+    featuredMedia: {
+      type: mediaSchema,
+      default: () => ({}),
+    },
+
     projectsIntro: {
       eyebrow: {
         type: String,
@@ -160,6 +165,7 @@ const homePageSchema = new mongoose.Schema(
         trim: true,
       },
     },
+
     servicesIntro: {
       eyebrow: {
         type: String,
@@ -177,6 +183,7 @@ const homePageSchema = new mongoose.Schema(
         trim: true,
       },
     },
+
     processIntro: {
       eyebrow: {
         type: String,
@@ -188,11 +195,18 @@ const homePageSchema = new mongoose.Schema(
         default: "Fikirden yayına kadar açık ve sade bir süreç.",
         trim: true,
       },
+      description: {
+        type: String,
+        default: "",
+        trim: true,
+      },
     },
+
     processSteps: {
       type: [processStepSchema],
       default: [],
     },
+
     aboutPreview: {
       eyebrow: {
         type: String,
@@ -210,6 +224,7 @@ const homePageSchema = new mongoose.Schema(
         trim: true,
       },
     },
+
     contactCta: {
       eyebrow: {
         type: String,
@@ -221,12 +236,23 @@ const homePageSchema = new mongoose.Schema(
         default: "Birlikte dikkat çekici bir şey üretelim.",
         trim: true,
       },
+      description: {
+        type: String,
+        default: "",
+        trim: true,
+      },
       buttonLabel: {
         type: String,
         default: "İletişime geç",
         trim: true,
       },
+      buttonHref: {
+        type: String,
+        default: "/iletisim",
+        trim: true,
+      },
     },
+
     sections: {
       type: [sectionSchema],
       default: [
@@ -238,6 +264,7 @@ const homePageSchema = new mongoose.Schema(
         { key: "contact", isVisible: true, order: 6 },
       ],
     },
+
     seo: {
       title: {
         type: String,
@@ -257,4 +284,3 @@ const homePageSchema = new mongoose.Schema(
 );
 
 export default mongoose.model("HomePage", homePageSchema);
-

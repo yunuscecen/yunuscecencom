@@ -3052,3 +3052,30 @@ body {
   font-weight: 300;
   letter-spacing: -0.065em;
 }
+
+.contact-form__feedback {
+  margin: 4px 0 0;
+  padding: 13px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.contact-form__feedback.is-success {
+  border-color: rgba(71, 218, 150, 0.25);
+  background: rgba(71, 218, 150, 0.06);
+  color: #78dfb0;
+}
+
+.contact-form__feedback.is-error {
+  border-color: rgba(255, 91, 111, 0.25);
+  background: rgba(255, 91, 111, 0.06);
+  color: #ff8a99;
+}
+
+.contact-form .light-button:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}

@@ -20,6 +20,7 @@ import AdminServicesPage from "./pages/admin/AdminServicesPage";
 import AdminSettingsPage from "./pages/admin/AdminSettingsPage";
 import AdminProjectsPage from "./pages/admin/AdminProjectsPage";
 import AdminMessagesPage from "./pages/admin/AdminMessagesPage";
+import AdminPageContentPage from "./pages/admin/AdminPageContentPage";
 const NotFoundPage = () => (
   <section className="page-state">
     <span>404</span>
@@ -85,7 +86,10 @@ const App = () => {
             index
             element={<DashboardPage />}
           />
-
+<Route
+  path="sayfa-metinleri"
+  element={<AdminPageContentPage />}
+/>
          <Route path="home" element={<AdminHomePage />} />
 
           <Route path="about" element={<AdminAboutPage />} />
@@ -95,6 +99,7 @@ const App = () => {
           <Route path="services" element={<AdminServicesPage />} />
 
           <Route path="messages" element={<AdminMessagesPage />} />
+          
 
           <Route
   path="media"

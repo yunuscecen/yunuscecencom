@@ -36,9 +36,6 @@ const http = axios.create({
   baseURL,
   withCredentials: true,
   timeout: 15000,
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
 
 http.interceptors.request.use((config) => {

@@ -63,6 +63,11 @@ const navigation = [
     to: "/admin/settings",
     icon: Settings,
   },
+  {
+  label: "Sayfa Metinleri",
+  to: "/admin/sayfa-metinleri",
+  icon: FileText,
+},
 ];
 
 const AdminLayout = () => {

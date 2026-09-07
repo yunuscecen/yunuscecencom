@@ -13,6 +13,8 @@ import adminServiceRoutes from "./routes/adminServiceRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import adminMessageRoutes from "./routes/adminMessageRoutes.js";
 import adminMediaRoutes from "./routes/adminMediaRoutes.js";
+import adminDashboardRoutes from "./routes/adminDashboardRoutes.js";
+import pageContentRoutes from "./routes/pageContentRoutes.js";
 import {
   errorHandler,
   notFound,
@@ -80,8 +82,8 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/admin/services", adminServiceRoutes);
 app.use("/api/admin/messages", adminMessageRoutes);
 app.use("/api/admin/media", adminMediaRoutes);
-
-
+app.use("/api/admin/dashboard", adminDashboardRoutes);
+app.use("/api/page-content", pageContentRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

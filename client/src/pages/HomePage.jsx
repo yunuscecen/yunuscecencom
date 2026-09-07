@@ -8,9 +8,10 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import ManagedImage from "../components/ui/ManagedImage";
 
+import ManagedImage from "../components/ui/ManagedImage";
 import http from "../api/http";
+import { usePageContent } from "../context/PageContentContext";
 import { useSiteSettings } from "../context/SiteContext";
 
 const serviceIcons = [Braces, Layers3, PenTool, Sparkles];
@@ -33,6 +34,14 @@ const renderHighlightedTitle = (title, highlightedText) => {
 
 const HomePage = () => {
   const { settings } = useSiteSettings();
+
+  const {
+    content: pageContent,
+    loading: pageContentLoading,
+    error: pageContentError,
+  } = usePageContent();
+
+  const copy = pageContent.home || {};
 
   const [home, setHome] = useState(null);
   const [services, setServices] = useState([]);
@@ -74,21 +83,24 @@ const HomePage = () => {
     return () => controller.abort();
   }, []);
 
-  if (status === "loading") {
+  if (status === "loading" || pageContentLoading) {
     return (
       <section className="page-state">
-        <span>YÇ / Loading</span>
-        <p>Portfolio hazırlanıyor.</p>
+        <span>{copy.loadingKicker || "YÇ / Loading"}</span>
+        <p>{copy.loadingText || "Portfolio hazırlanıyor."}</p>
       </section>
     );
   }
 
-  if (status === "error" || !home) {
+  if (status === "error" || pageContentError || !home) {
     return (
       <section className="page-state">
-        <span>Connection error</span>
-        <h1>İçerik yüklenemedi.</h1>
-        <p>Backend sunucusunun çalıştığından emin olun.</p>
+        <span>{copy.errorKicker || "Connection error"}</span>
+        <h1>{copy.errorTitle || "İçerik yüklenemedi."}</h1>
+        <p>
+          {copy.errorDescription ||
+            "Backend sunucusunun çalıştığından emin olun."}
+        </p>
       </section>
     );
   }
@@ -106,6 +118,7 @@ const HomePage = () => {
 
   const featuredProject = projects[0];
   const otherProjects = projects.slice(1);
+  const currentYear = new Date().getFullYear();
 
   return (
     <>
@@ -149,43 +162,33 @@ const HomePage = () => {
             </div>
 
             <span className="showcase__coordinate showcase__coordinate--left">
-              CREATIVE WEB SOFTWARE AGENCY
+              {copy.coordinateLeft}
             </span>
 
             <span className="showcase__coordinate showcase__coordinate--right">
-              MINIMAL, CREATIVE AND INSPIRING DIGITAL EXPERIENCES
+              {copy.coordinateRight}
             </span>
           </div>
 
           <aside className="showcase__rail">
-            <article>
-              <span>01 / Development</span>
-              <h2>Digital systems</h2>
-              <p>
-                MERN ve WordPress ile ölçeklenebilir, yönetilebilir
-                dijital ürünler.
-              </p>
-            </article>
-
-            <article>
-              <span>02 / Design</span>
-              <h2>Visual experiences</h2>
-              <p>
-                Figma, Photoshop ve Illustrator ile güçlü arayüz ve
-                görsel iletişim.
-              </p>
-            </article>
+            {(copy.railItems || []).map((item, index) => (
+              <article key={`${item.eyebrow}-${index}`}>
+                <span>{item.eyebrow}</span>
+                <h2>{item.title}</h2>
+                <p>{item.description}</p>
+              </article>
+            ))}
 
             <div className="showcase__rail-footer">
               <span>{settings.contact?.location}</span>
-              <span>2026</span>
+              <span>{currentYear}</span>
             </div>
           </aside>
         </section>
       )}
 
       <section className="manifesto">
-        <p className="section-kicker">01 / Perspective</p>
+        <p className="section-kicker">{copy.manifestoKicker}</p>
 
         <h2>
           {renderHighlightedTitle(
@@ -198,31 +201,35 @@ const HomePage = () => {
           {home.hero?.description}
         </p>
       </section>
-<section className="home-feature-media">
-  <ManagedImage
-    src={home.featuredMedia?.url}
-    alt={home.featuredMedia?.alt}
-    label="Ana sayfa vitrin görseli — 16:9"
-    badge="Featured visual / 01"
-    loading="eager"
-  />
 
-  <div className="home-feature-media__caption">
-    <span>
-      {home.featuredMedia?.caption ||
-        "Development × Design"}
-    </span>
+      <section className="home-feature-media">
+        <ManagedImage
+          src={home.featuredMedia?.url}
+          alt={home.featuredMedia?.alt}
+          label={copy.featuredImageLabel}
+          badge={copy.featuredImageBadge}
+          loading="eager"
+        />
 
-    <span>1600 × 900 önerilir</span>
-  </div>
-</section>
+        <div className="home-feature-media__caption">
+          <span>
+            {home.featuredMedia?.caption ||
+              copy.featuredImageFallbackCaption}
+          </span>
+
+          <span>{copy.featuredImageRecommendation}</span>
+        </div>
+      </section>
+
       {sectionIsVisible("projects") && featuredProject && (
         <section className="projects-showcase">
           <header className="content-heading">
             <div>
               <p className="section-kicker">
-                02 / {home.projectsIntro?.eyebrow}
+                {copy.projectsSectionNumber} /{" "}
+                {home.projectsIntro?.eyebrow}
               </p>
+
               <h2>{home.projectsIntro?.title}</h2>
             </div>
 
@@ -230,7 +237,7 @@ const HomePage = () => {
               <p>{home.projectsIntro?.description}</p>
 
               <Link className="inline-link" to="/projeler">
-                Tüm projeleri incele
+                {copy.allProjectsLabel}
                 <ArrowRight size={17} />
               </Link>
             </div>
@@ -285,8 +292,10 @@ const HomePage = () => {
           <header className="content-heading">
             <div>
               <p className="section-kicker">
-                03 / {home.servicesIntro?.eyebrow}
+                {copy.servicesSectionNumber} /{" "}
+                {home.servicesIntro?.eyebrow}
               </p>
+
               <h2>{home.servicesIntro?.title}</h2>
             </div>
 
@@ -295,7 +304,8 @@ const HomePage = () => {
 
           <div className="service-grid">
             {services.map((service, index) => {
-              const Icon = serviceIcons[index % serviceIcons.length];
+              const Icon =
+                serviceIcons[index % serviceIcons.length];
 
               return (
                 <article className="service-card" key={service._id}>
@@ -333,9 +343,15 @@ const HomePage = () => {
         <section className="process-showcase">
           <header>
             <p className="section-kicker">
-              04 / {home.processIntro?.eyebrow}
+              {copy.processSectionNumber} /{" "}
+              {home.processIntro?.eyebrow}
             </p>
+
             <h2>{home.processIntro?.title}</h2>
+
+            {home.processIntro?.description && (
+              <p>{home.processIntro.description}</p>
+            )}
           </header>
 
           <div className="process-grid">
@@ -354,19 +370,22 @@ const HomePage = () => {
 
       {sectionIsVisible("about") && (
         <section className="about-feature">
-          <div className="about-feature__field" aria-hidden="true">
+          <div
+            className="about-feature__field"
+            aria-hidden="true"
+          >
             <span />
             <span />
             <span />
           </div>
 
           <div className="about-feature__content">
-            <p className="section-kicker">05 / About</p>
+            <p className="section-kicker">{copy.aboutKicker}</p>
             <h2>{home.aboutPreview?.title}</h2>
             <p>{home.aboutPreview?.description}</p>
 
             <Link className="light-button" to="/hakkimda">
-              Hakkımda
+              {copy.aboutButtonLabel}
               <ArrowUpRight size={15} />
             </Link>
           </div>

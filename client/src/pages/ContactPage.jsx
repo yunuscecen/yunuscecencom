@@ -3,6 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 
 import http from "../api/http";
+import { usePageContent } from "../context/PageContentContext";
 import { useSiteSettings } from "../context/SiteContext";
 
 const allowedServices = [
@@ -24,8 +25,32 @@ const initialForm = {
   website: "",
 };
 
+const renderHighlightedTitle = (title, highlightedText) => {
+  if (!highlightedText || !title.includes(highlightedText)) {
+    return title;
+  }
+
+  const index = title.indexOf(highlightedText);
+
+  return (
+    <>
+      {title.slice(0, index)}
+      <span className="gradient-text">{highlightedText}</span>
+      {title.slice(index + highlightedText.length)}
+    </>
+  );
+};
+
 const ContactPage = () => {
   const { settings } = useSiteSettings();
+
+  const {
+    content: pageContent,
+    loading: pageContentLoading,
+    error: pageContentError,
+  } = usePageContent();
+
+  const copy = pageContent.contact || {};
   const [searchParams] = useSearchParams();
 
   const [form, setForm] = useState(initialForm);
@@ -50,6 +75,11 @@ const ContactPage = () => {
       ...current,
       [name]: value,
     }));
+
+    if (feedback) {
+      setFeedback("");
+      setSubmitStatus("idle");
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -68,6 +98,7 @@ const ContactPage = () => {
       setSubmitStatus("error");
       setFeedback(
         error.response?.data?.message ||
+          copy.errorMessage ||
           "Mesaj gönderilemedi. Lütfen tekrar deneyin."
       );
     }
@@ -77,20 +108,49 @@ const ContactPage = () => {
     .filter((social) => social.isVisible !== false)
     .sort((a, b) => a.order - b.order);
 
+  const serviceOptions = [...(copy.serviceOptions || [])].sort(
+    (a, b) => a.order - b.order
+  );
+
+  const budgetOptions = [...(copy.budgetOptions || [])].sort(
+    (a, b) => a.order - b.order
+  );
+
+  if (pageContentLoading) {
+    return (
+      <section className="page-state">
+        <p>İletişim sayfası hazırlanıyor.</p>
+      </section>
+    );
+  }
+
+  if (pageContentError) {
+    return (
+      <section className="page-state">
+        <h1>İletişim içeriği yüklenemedi.</h1>
+      </section>
+    );
+  }
+
   return (
     <div className="contact-page">
       <header className="contact-page__hero">
-        <p className="section-kicker">Contact / Start a project</p>
+        <p className="section-kicker">{copy.heroKicker}</p>
 
         <h1>
-          Birlikte çalışan ve <span className="gradient-text">iz bırakan</span>{" "}
-          bir şey üretelim.
+          {renderHighlightedTitle(
+            copy.title || "",
+            copy.highlightedText || ""
+          )}
         </h1>
       </header>
 
       <section className="contact-layout">
         <aside className="contact-information">
-          <div className="contact-information__visual" aria-hidden="true">
+          <div
+            className="contact-information__visual"
+            aria-hidden="true"
+          >
             <span />
             <span />
             <span />
@@ -103,7 +163,7 @@ const ContactPage = () => {
             <dl>
               {settings.contact?.email && (
                 <div>
-                  <dt>E-posta</dt>
+                  <dt>{copy.emailLabel}</dt>
                   <dd>
                     <a href={`mailto:${settings.contact.email}`}>
                       {settings.contact.email}
@@ -114,7 +174,7 @@ const ContactPage = () => {
 
               {settings.contact?.phone && (
                 <div>
-                  <dt>Telefon</dt>
+                  <dt>{copy.phoneLabel}</dt>
                   <dd>
                     <a href={`tel:${settings.contact.phone}`}>
                       {settings.contact.phone}
@@ -124,7 +184,7 @@ const ContactPage = () => {
               )}
 
               <div>
-                <dt>Konum</dt>
+                <dt>{copy.locationLabel}</dt>
                 <dd>{settings.contact?.location}</dd>
               </div>
             </dl>
@@ -150,7 +210,8 @@ const ContactPage = () => {
         <form className="contact-form" onSubmit={handleSubmit}>
           <div className="contact-form__row">
             <label>
-              <span>Ad soyad *</span>
+              <span>{copy.nameLabel}</span>
+
               <input
                 type="text"
                 name="name"
@@ -164,7 +225,8 @@ const ContactPage = () => {
             </label>
 
             <label>
-              <span>E-posta *</span>
+              <span>{copy.formEmailLabel}</span>
+
               <input
                 type="email"
                 name="email"
@@ -179,7 +241,8 @@ const ContactPage = () => {
 
           <div className="contact-form__row">
             <label>
-              <span>Şirket veya marka</span>
+              <span>{copy.companyLabel}</span>
+
               <input
                 type="text"
                 name="company"
@@ -191,55 +254,55 @@ const ContactPage = () => {
             </label>
 
             <label>
-              <span>İlgilendiğin hizmet</span>
+              <span>{copy.serviceLabel}</span>
+
               <select
                 name="service"
                 value={form.service}
                 onChange={handleChange}
               >
-                <option value="">Seçiniz</option>
-                <option value="web-development">
-                  MERN Web Development
+                <option value="">
+                  {copy.servicePlaceholder}
                 </option>
-                <option value="wordpress">WordPress</option>
-                <option value="ui-ux">UI / UX Design</option>
-                <option value="graphic-design">
-                  Graphic Design
-                </option>
-                <option value="branding">Branding</option>
-                <option value="other">Diğer</option>
+
+                {serviceOptions.map((option) => (
+                  <option
+                    value={option.value}
+                    key={option.value}
+                  >
+                    {option.label}
+                  </option>
+                ))}
               </select>
             </label>
           </div>
 
           <label>
-            <span>Tahmini bütçe</span>
+            <span>{copy.budgetLabel}</span>
+
             <select
               name="budget"
               value={form.budget}
               onChange={handleChange}
             >
-              <option value="">Belirtilmedi</option>
-              <option value="10.000 - 25.000 TL">
-                10.000 – 25.000 TL
+              <option value="">
+                {copy.budgetPlaceholder}
               </option>
-              <option value="25.000 - 50.000 TL">
-                25.000 – 50.000 TL
-              </option>
-              <option value="50.000 - 100.000 TL">
-                50.000 – 100.000 TL
-              </option>
-              <option value="100.000 TL ve üzeri">
-                100.000 TL ve üzeri
-              </option>
-              <option value="Karar verilmedi">
-                Henüz karar verilmedi
-              </option>
+
+              {budgetOptions.map((option) => (
+                <option
+                  value={option.value}
+                  key={option.value}
+                >
+                  {option.label}
+                </option>
+              ))}
             </select>
           </label>
 
           <label>
-            <span>Projeden bahset *</span>
+            <span>{copy.messageLabel}</span>
+
             <textarea
               name="message"
               value={form.message}
@@ -251,8 +314,12 @@ const ContactPage = () => {
             />
           </label>
 
-          <label className="contact-honeypot" aria-hidden="true">
+          <label
+            className="contact-honeypot"
+            aria-hidden="true"
+          >
             Website
+
             <input
               type="text"
               name="website"
@@ -264,31 +331,28 @@ const ContactPage = () => {
           </label>
 
           <div className="contact-form__footer">
-            <p>
-              Formu göndererek iletişim amacıyla verdiğiniz bilgilerin
-              kullanılmasını kabul etmiş olursunuz.
-            </p>
+            <p>{copy.consentText}</p>
 
             <button
-              className="submit-button"
+              className="light-button"
               type="submit"
               disabled={submitStatus === "submitting"}
             >
               {submitStatus === "submitting"
-                ? "Gönderiliyor..."
-                : "Mesajı gönder"}
+                ? copy.submittingLabel
+                : copy.submitLabel}
 
-              <ArrowUpRight size={16} />
+              <ArrowUpRight size={15} />
             </button>
           </div>
 
           {feedback && (
-            <div
-              className={`form-feedback form-feedback--${submitStatus}`}
+            <p
+              className={`contact-form__feedback is-${submitStatus}`}
               role="status"
             >
               {feedback}
-            </div>
+            </p>
           )}
         </form>
       </section>

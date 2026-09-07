@@ -5,6 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { SiteProvider } from "./context/SiteContext";
 import { AuthProvider } from "./context/AuthContext";
+import { PageContentProvider } from "./context/PageContentContext";
 
 import "./index.css";
 import "./styles/admin.css";
@@ -14,7 +15,10 @@ createRoot(document.getElementById("root")).render(
     <BrowserRouter>
       <AuthProvider>
         <SiteProvider>
+           <PageContentProvider>
           <App />
+           </PageContentProvider>
+          
         </SiteProvider>
       </AuthProvider>
     </BrowserRouter>

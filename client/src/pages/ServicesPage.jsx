@@ -7,11 +7,13 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+
 import ManagedImage from "../components/ui/ManagedImage";
 import http from "../api/http";
-
+import { usePageContent } from "../context/PageContentContext";
 
 const icons = [Braces, Layers3, PenTool, Sparkles];
+
 const contactServiceMap = {
   "mern-web-development": "web-development",
   "wordpress-development": "wordpress",
@@ -20,6 +22,14 @@ const contactServiceMap = {
 };
 
 const ServicesPage = () => {
+  const {
+    content: pageContent,
+    loading: pageContentLoading,
+    error: pageContentError,
+  } = usePageContent();
+
+  const copy = pageContent.services || {};
+
   const [services, setServices] = useState([]);
   const [status, setStatus] = useState("loading");
 
@@ -47,34 +57,44 @@ const ServicesPage = () => {
     return () => controller.abort();
   }, []);
 
+  if (pageContentLoading) {
+    return (
+      <section className="catalog-state">
+        <p>Sayfa hazırlanıyor.</p>
+      </section>
+    );
+  }
+
   return (
     <div className="services-page">
       <header className="services-page__hero">
-        <p className="section-kicker">Services / Capabilities</p>
+        <p className="section-kicker">{copy.heroKicker}</p>
 
         <div>
-          <h1>Bir fikrin ihtiyaç duyduğu teknik ve görsel sistem.</h1>
-
-          <p>
-            Geliştirme ve tasarım hizmetleri birbirinden bağımsız
-            veya uçtan uca tek bir üretim süreci olarak sunulabilir.
-          </p>
+          <h1>{copy.title}</h1>
+          <p>{copy.description}</p>
         </div>
       </header>
 
       {status === "loading" && (
         <section className="catalog-state">
-          <p>Hizmetler yükleniyor.</p>
+          <p>{copy.loadingText}</p>
         </section>
       )}
 
-      {status === "error" && (
+      {(status === "error" || pageContentError) && (
         <section className="catalog-state">
-          <p>Hizmetler şu anda yüklenemiyor.</p>
+          <p>{copy.errorText}</p>
         </section>
       )}
 
-      {status === "success" && (
+      {status === "success" && services.length === 0 && (
+        <section className="catalog-state">
+          <p>{copy.emptyText}</p>
+        </section>
+      )}
+
+      {status === "success" && services.length > 0 && (
         <section className="service-details">
           {services.map((service, index) => {
             const Icon = icons[index % icons.length];
@@ -87,37 +107,45 @@ const ServicesPage = () => {
                 id={service.slug}
                 key={service._id}
               >
-  {service.coverImage?.url ? (
-  <ManagedImage
-    className="service-detail__visual service-detail__visual--image"
-    src={service.coverImage.url}
-    alt={service.coverImage.alt || service.title}
-    badge={`${String(index + 1).padStart(2, "0")} / Service`}
-  />
-) : (
-  <div
-    className={`service-detail__visual service-detail__visual--${
-      (index % 4) + 1
-    }`}
-  >
-    <div className="service-detail__grid" />
+                {service.coverImage?.url ? (
+                  <ManagedImage
+                    className="service-detail__visual service-detail__visual--image"
+                    src={service.coverImage.url}
+                    alt={
+                      service.coverImage.alt || service.title
+                    }
+                    badge={`${String(index + 1).padStart(
+                      2,
+                      "0"
+                    )} / Service`}
+                  />
+                ) : (
+                  <div
+                    className={`service-detail__visual service-detail__visual--${
+                      (index % 4) + 1
+                    }`}
+                  >
+                    <div className="service-detail__grid" />
 
-    <Icon aria-hidden="true" />
+                    <Icon aria-hidden="true" />
 
-    <span>
-      {String(index + 1).padStart(2, "0")}
-    </span>
-  </div>
-)}
+                    <span>
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+                )}
 
                 <div className="service-detail__content">
-                  <p className="section-kicker">{service.type}</p>
+                  <p className="section-kicker">
+                    {service.type}
+                  </p>
+
                   <h2>{service.title}</h2>
                   <p>{service.description || service.summary}</p>
 
                   {service.deliverables?.length > 0 && (
                     <div className="deliverables">
-                      <span>Teslim kapsamı</span>
+                      <span>{copy.deliverablesLabel}</span>
 
                       <ul>
                         {service.deliverables.map((item) => (
@@ -137,7 +165,7 @@ const ServicesPage = () => {
                     className="light-button"
                     to={`/iletisim?service=${contactService}`}
                   >
-                    Projeyi konuşalım
+                    {copy.contactButtonLabel}
                     <ArrowUpRight size={15} />
                   </Link>
                 </div>

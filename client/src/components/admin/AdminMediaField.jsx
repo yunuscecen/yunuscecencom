@@ -50,7 +50,15 @@ const AdminMediaField = ({
       formData.append("image", file);
       formData.append("folder", folder);
 
-      const response = await http.post("/admin/media", formData);
+      const response = await http.post(
+  "/admin/media",
+  formData,
+  {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  }
+);
 
       const uploadedMedia =
         response.data?.data ||
