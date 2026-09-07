@@ -3109,3 +3109,368 @@ body {
     flex-direction: column;
   }
 }
+
+/* AdFolio / Behance reklam tasarımları */
+
+.adfolio-preview {
+  position: relative;
+  isolation: isolate;
+  max-width: 1480px;
+  margin: 0 auto clamp(8rem, 13vw, 13rem);
+  padding: clamp(1.5rem, 4vw, 4rem);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: clamp(1.25rem, 2.5vw, 2.25rem);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(79, 124, 255, 0.09),
+      transparent 38%
+    ),
+    linear-gradient(
+      315deg,
+      rgba(165, 108, 255, 0.08),
+      transparent 42%
+    ),
+    #0d0f14;
+}
+
+.adfolio-preview__glow {
+  position: absolute;
+  top: -18rem;
+  left: 28%;
+  z-index: -1;
+  width: 40rem;
+  height: 40rem;
+  border-radius: 50%;
+  background: rgba(65, 110, 255, 0.13);
+  filter: blur(100px);
+  pointer-events: none;
+}
+
+.adfolio-preview__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(17rem, 0.65fr);
+  align-items: end;
+  gap: clamp(2rem, 6vw, 7rem);
+  margin-bottom: clamp(3rem, 6vw, 6rem);
+}
+
+.adfolio-preview__header h2 {
+  max-width: 13ch;
+  margin: 0;
+  font-size: clamp(2.6rem, 5.5vw, 6.5rem);
+  font-weight: 300;
+  line-height: 0.96;
+  letter-spacing: -0.065em;
+}
+
+.adfolio-preview__header > div:last-child {
+  display: grid;
+  gap: 1.6rem;
+}
+
+.adfolio-preview__header > div:last-child > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.adfolio-preview__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: clamp(1rem, 2vw, 2rem);
+}
+
+.adfolio-card {
+  position: relative;
+  min-height: clamp(22rem, 39vw, 38rem);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  background: var(--surface);
+  transform: rotate(-1deg);
+  transition:
+    transform 350ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 250ms ease;
+}
+
+.adfolio-card:nth-child(2) {
+  margin-top: clamp(2rem, 6vw, 6rem);
+  transform: rotate(1deg);
+}
+
+.adfolio-card:hover {
+  z-index: 2;
+  border-color: rgba(142, 175, 255, 0.42);
+  transform: translateY(-0.75rem) rotate(0);
+}
+
+.adfolio-card:nth-child(2):hover {
+  transform: translateY(-0.75rem) rotate(0);
+}
+
+.adfolio-card > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.adfolio-card:hover > img {
+  transform: scale(1.035);
+}
+
+.adfolio-card__overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: end;
+  gap: 1.25rem;
+  padding: clamp(1.25rem, 2.5vw, 2.25rem);
+  background: linear-gradient(
+    180deg,
+    transparent 38%,
+    rgba(5, 6, 9, 0.92) 100%
+  );
+}
+
+.adfolio-card__overlay > span,
+.adfolio-card__overlay p {
+  margin: 0;
+  color: var(--blue-light);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.adfolio-card__overlay h3 {
+  margin: 0.45rem 0 0;
+  font-size: clamp(1.2rem, 2vw, 2rem);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+}
+
+.adfolio-card__overlay svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.advertising-page {
+  width: 100%;
+  padding-bottom: clamp(7rem, 12vw, 12rem);
+}
+
+.advertising-page__hero {
+  display: grid;
+  grid-template-columns: minmax(9rem, 0.3fr) minmax(0, 1fr) auto;
+  align-items: end;
+  gap: clamp(2rem, 5vw, 6rem);
+  padding: clamp(5rem, 9vw, 9rem) 0 clamp(4rem, 7vw, 7rem);
+  border-bottom: 1px solid var(--line);
+}
+
+.advertising-page__hero .section-kicker {
+  margin: 0;
+}
+
+.advertising-page__hero h1 {
+  max-width: 11ch;
+  margin: 0;
+  font-size: clamp(3.4rem, 8vw, 9rem);
+  font-weight: 300;
+  line-height: 0.88;
+  letter-spacing: -0.075em;
+}
+
+.advertising-page__hero div > p {
+  max-width: 48rem;
+  margin: 2rem 0 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+.advertising-page__hero > span {
+  color: var(--quiet);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.behance-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: clamp(1.25rem, 2.5vw, 2.5rem);
+  padding: clamp(3rem, 6vw, 6rem) 0;
+}
+
+.behance-grid-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 1.4rem;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(79, 124, 255, 0.07),
+      transparent 35%
+    ),
+    var(--surface);
+  transition:
+    transform 300ms ease,
+    border-color 300ms ease;
+}
+
+.behance-grid-card:nth-child(even) {
+  margin-top: clamp(2rem, 5vw, 5rem);
+}
+
+.behance-grid-card:hover {
+  border-color: rgba(142, 175, 255, 0.38);
+  transform: translateY(-0.5rem);
+}
+
+.behance-grid-card__header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: end;
+  gap: 1rem;
+  min-height: 8rem;
+  padding: clamp(1.25rem, 2.5vw, 2rem);
+  border-bottom: 1px solid var(--line);
+}
+
+.behance-grid-card__header > span {
+  color: var(--blue-light);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+}
+
+.behance-grid-card__header p {
+  margin: 0 0 0.5rem;
+  color: var(--quiet);
+  font-family: var(--mono);
+  font-size: 0.67rem;
+  text-transform: uppercase;
+}
+
+.behance-grid-card__header h2 {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.5vw, 2.5rem);
+  font-weight: 300;
+  letter-spacing: -0.045em;
+}
+
+.behance-grid-card__frame {
+  position: relative;
+  min-height: 620px;
+  overflow: hidden;
+  background: #111318;
+}
+
+.behance-grid-card__frame::before {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(79, 124, 255, 0.08),
+    transparent
+  );
+  content: "";
+}
+
+.behance-grid-card__frame iframe {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 620px;
+  border: 0;
+  background: #111318;
+}
+
+.behance-grid-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  min-height: 5rem;
+  padding: 1rem clamp(1.25rem, 2.5vw, 2rem);
+  border-top: 1px solid var(--line);
+}
+
+.behance-grid-card__footer p {
+  margin: 0;
+  color: var(--quiet);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.behance-grid-card__footer a {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--blue-light);
+  font-size: 0.82rem;
+}
+@media (max-width: 900px) {
+  .adfolio-preview__header,
+  .advertising-page__hero {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .advertising-page__hero {
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .adfolio-preview {
+    padding: 1rem;
+    border-radius: 1rem;
+  }
+
+  .adfolio-preview__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .adfolio-card,
+  .adfolio-card:nth-child(2) {
+    min-height: 25rem;
+    margin-top: 0;
+    transform: none;
+  }
+
+  .advertising-page__hero {
+    padding-top: 4rem;
+  }
+
+  .advertising-page__hero h1 {
+    font-size: clamp(3rem, 15vw, 5rem);
+  }
+
+  .behance-project__bar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .behance-project iframe {
+    height: 72vh;
+    min-height: 520px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .adfolio-card,
+  .adfolio-card > img {
+    transition: none;
+  }
+}

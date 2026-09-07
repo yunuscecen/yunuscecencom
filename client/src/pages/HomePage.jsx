@@ -13,6 +13,8 @@ import ManagedImage from "../components/ui/ManagedImage";
 import http from "../api/http";
 import { usePageContent } from "../context/PageContentContext";
 import { useSiteSettings } from "../context/SiteContext";
+import { mergeAdvertisingPortfolio } from "../data/advertisingPortfolio";
+
 
 const serviceIcons = [Braces, Layers3, PenTool, Sparkles];
 
@@ -120,6 +122,14 @@ const HomePage = () => {
 const otherProjects = projects.slice(1);
 const currentYear = new Date().getFullYear();
 
+const advertisingPortfolio = mergeAdvertisingPortfolio(
+  home.advertisingPortfolio
+);
+
+const advertisingProjects = [...advertisingPortfolio.projects]
+  .filter((project) => project.isVisible !== false)
+  .sort((a, b) => a.order - b.order);
+
 return (
   <>
     <Seo
@@ -226,6 +236,68 @@ return (
           <span>{copy.featuredImageRecommendation}</span>
         </div>
       </section>
+      {advertisingPortfolio.isVisible &&
+        advertisingProjects.length > 0 && (
+          <section className="adfolio-preview">
+            <div
+              className="adfolio-preview__glow"
+              aria-hidden="true"
+            />
+
+            <header className="adfolio-preview__header">
+              <div>
+                <p className="section-kicker">
+                  {advertisingPortfolio.eyebrow}
+                </p>
+
+                <h2>{advertisingPortfolio.title}</h2>
+              </div>
+
+              <div>
+                <p>{advertisingPortfolio.description}</p>
+
+                <Link
+                  className="inline-link"
+                  to="/reklam-tasarimlari"
+                >
+                  {advertisingPortfolio.buttonLabel}
+                  <ArrowRight size={17} />
+                </Link>
+              </div>
+            </header>
+
+            <div className="adfolio-preview__grid">
+              {advertisingProjects.slice(0, 2).map(
+                (project, index) => (
+                  <Link
+                    className="adfolio-card"
+                    to="/reklam-tasarimlari"
+                    key={project.projectId}
+                  >
+                    <img
+                      src={project.coverUrl}
+                      alt={`${project.title} kapak görseli`}
+                      loading={index === 0 ? "eager" : "lazy"}
+                    />
+
+                    <div className="adfolio-card__overlay">
+                      <span>
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+
+                      <div>
+                        <p>Behance collection</p>
+                        <h3>{project.title}</h3>
+                      </div>
+
+                      <ArrowUpRight aria-hidden="true" />
+                    </div>
+                  </Link>
+                )
+              )}
+            </div>
+          </section>
+        )}
 
       {sectionIsVisible("projects") && featuredProject && (
         <section className="projects-showcase">

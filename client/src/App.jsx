@@ -11,6 +11,7 @@ import SiteLayout from "./components/layout/SiteLayout";
 import Seo from "./components/Seo";
 
 import AboutPage from "./pages/AboutPage";
+import AdvertisingDesignsPage from "./pages/AdvertisingDesignsPage";
 import ContactPage from "./pages/ContactPage";
 import HomePage from "./pages/HomePage";
 import ProjectDetailPage from "./pages/ProjectDetailPage";
@@ -68,15 +69,20 @@ const App = () => {
           element={<AboutPage />}
         />
 
-        <Route
-          path="hizmetler"
-          element={<ServicesPage />}
-        />
+       <Route
+  path="hizmetler"
+  element={<ServicesPage />}
+/>
 
-        <Route
-          path="iletisim"
-          element={<ContactPage />}
-        />
+<Route
+  path="reklam-tasarimlari"
+  element={<AdvertisingDesignsPage />}
+/>
+
+<Route
+  path="iletisim"
+  element={<ContactPage />}
+/>
 
         <Route
           path="*"

@@ -67,7 +67,187 @@ const processStepSchema = new mongoose.Schema({
     default: 0,
   },
 });
+const isBehanceUrl = (value, pathnamePattern) => {
+  if (!value) return false;
 
+  try {
+    const parsedUrl = new URL(value);
+
+    return (
+      parsedUrl.protocol === "https:" &&
+      ["behance.net", "www.behance.net"].includes(
+        parsedUrl.hostname
+      ) &&
+      pathnamePattern.test(parsedUrl.pathname)
+    );
+  } catch {
+    return false;
+  }
+};
+
+const isBehanceImageUrl = (value) => {
+  if (!value) return false;
+
+  try {
+    const parsedUrl = new URL(value);
+
+    return (
+      parsedUrl.protocol === "https:" &&
+      parsedUrl.hostname.endsWith(".behance.net")
+    );
+  } catch {
+    return false;
+  }
+};
+
+const advertisingProjectSchema = new mongoose.Schema(
+  {
+    projectId: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    projectUrl: {
+      type: String,
+      required: true,
+      trim: true,
+      validate: {
+        validator: (value) =>
+          isBehanceUrl(value, /^\/gallery\/\d+\//),
+        message: "Geçerli bir Behance proje adresi girin.",
+      },
+    },
+    embedUrl: {
+      type: String,
+      required: true,
+      trim: true,
+      validate: {
+        validator: (value) =>
+          isBehanceUrl(value, /^\/embed\/project\/\d+$/),
+        message: "Geçerli bir Behance embed adresi girin.",
+      },
+    },
+    coverUrl: {
+      type: String,
+      required: true,
+      trim: true,
+      validate: {
+        validator: isBehanceImageUrl,
+        message: "Kapak görseli Behance üzerinden gelmelidir.",
+      },
+    },
+    order: {
+      type: Number,
+      default: 0,
+    },
+    isVisible: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  {
+    _id: false,
+  }
+);
+
+const advertisingPortfolioSchema = new mongoose.Schema(
+  {
+    isVisible: {
+      type: Boolean,
+      default: true,
+    },
+    eyebrow: {
+      type: String,
+      default: "AdFolio / Advertising archive",
+      trim: true,
+    },
+    title: {
+      type: String,
+      default:
+        "Markaların yalnızca görülmesini değil, hatırlanmasını tasarlıyorum.",
+      trim: true,
+    },
+    description: {
+      type: String,
+      default:
+        "Sosyal medya, kampanya ve dijital reklam çalışmalarımdan oluşan seçili bir görsel arşiv.",
+      trim: true,
+    },
+    buttonLabel: {
+      type: String,
+      default: "Reklam tasarımlarını incele",
+      trim: true,
+    },
+    pageKicker: {
+      type: String,
+      default: "Selected advertising work / Behance",
+      trim: true,
+    },
+    pageTitle: {
+      type: String,
+      default: "Reklam Tasarımları",
+      trim: true,
+    },
+    pageDescription: {
+      type: String,
+      default:
+        "Farklı markalar, kampanyalar ve dijital platformlar için hazırladığım reklam ve sosyal medya tasarımları.",
+      trim: true,
+    },
+    projects: {
+      type: [advertisingProjectSchema],
+      default: () => [
+        {
+          projectId: "211707071",
+          title: "Reklam Tasarımları #1",
+          projectUrl:
+            "https://www.behance.net/gallery/211707071/AdFolio-Advertising-Social-Media-Design",
+          embedUrl:
+            "https://www.behance.net/embed/project/211707071?ilo0=1",
+          coverUrl:
+            "https://mir-s3-cdn-cf.behance.net/projects/max_808/96fadd211707071.Y3JvcCw4MDgsNjMyLDAsMA.png",
+          order: 1,
+          isVisible: true,
+        },
+        {
+          projectId: "211707899",
+          title: "Reklam Tasarımları #2",
+          projectUrl:
+            "https://www.behance.net/gallery/211707899/AdFolio-Advertising-Social-Media-Design",
+          embedUrl:
+            "https://www.behance.net/embed/project/211707899?ilo0=1",
+          coverUrl:
+            "https://mir-s3-cdn-cf.behance.net/projects/max_808/472eb1211707899.Y3JvcCw4MDgsNjMyLDAsMA.png",
+          order: 2,
+          isVisible: true,
+        },
+      ],
+    },
+    seo: {
+      title: {
+        type: String,
+        default: "Reklam Tasarımları",
+        trim: true,
+        maxlength: 70,
+      },
+      description: {
+        type: String,
+        default:
+          "Yunus Çeçen tarafından hazırlanan reklam ve sosyal medya tasarımı çalışmaları.",
+        trim: true,
+        maxlength: 170,
+      },
+    },
+  },
+  {
+    _id: false,
+  }
+);
 const sectionSchema = new mongoose.Schema(
   {
     key: {
@@ -202,12 +382,17 @@ const homePageSchema = new mongoose.Schema(
       },
     },
 
-    processSteps: {
-      type: [processStepSchema],
-      default: [],
-    },
+   processSteps: {
+  type: [processStepSchema],
+  default: [],
+},
 
-    aboutPreview: {
+advertisingPortfolio: {
+  type: advertisingPortfolioSchema,
+  default: () => ({}),
+},
+
+aboutPreview: {
       eyebrow: {
         type: String,
         default: "Hakkımda",

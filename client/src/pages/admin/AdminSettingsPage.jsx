@@ -22,11 +22,11 @@ const defaultSettings = {
     logoAlt: "",
   },
 
-  header: {
-    contactLabel: "",
-    contactHref: "",
-    showContactButton: true,
-  },
+ header: {
+  contactLabel: "Projenizi Konuşalım",
+  contactHref: "/iletisim",
+  showContactButton: true,
+},
 
   navigation: [],
 
@@ -77,9 +77,17 @@ const mergeSettings = (data = {}) => ({
   },
 
   header: {
-    ...defaultSettings.header,
-    ...data.header,
-  },
+  ...defaultSettings.header,
+  ...data.header,
+  contactLabel:
+    data.header?.contactLabel?.trim() ||
+    defaultSettings.header.contactLabel,
+  contactHref:
+    data.header?.contactHref?.trim() ||
+    defaultSettings.header.contactHref,
+  showContactButton:
+    data.header?.showContactButton !== false,
+},
 
   navigation: sortByOrder(data.navigation),
 
@@ -306,16 +314,27 @@ const AdminSettingsPage = () => {
     ...form,
 
     brand: {
-      ...form.brand,
-      name: form.brand.name.trim(),
-      shortName: form.brand.shortName.trim(),
-      profession: form.brand.profession.trim(),
-      logoUrl: form.brand.logoUrl || "",
-      logoPublicId: form.brand.logoPublicId || "",
-      logoAlt: form.brand.logoAlt?.trim() || "",
-    },
+  ...form.brand,
+  name: form.brand.name.trim(),
+  shortName: form.brand.shortName.trim(),
+  profession: form.brand.profession.trim(),
+  logoUrl: form.brand.logoUrl || "",
+  logoPublicId: form.brand.logoPublicId || "",
+  logoAlt: form.brand.logoAlt?.trim() || "",
+},
 
-    navigation: form.navigation.map((item, index) => ({
+header: {
+  contactLabel:
+    form.header.contactLabel.trim() ||
+    "Projenizi Konuşalım",
+  contactHref:
+    form.header.contactHref.trim() ||
+    "/iletisim",
+  showContactButton:
+    form.header.showContactButton !== false,
+},
+
+navigation: form.navigation.map((item, index) => ({
       ...item,
       label: item.label.trim(),
       href: item.href.trim(),

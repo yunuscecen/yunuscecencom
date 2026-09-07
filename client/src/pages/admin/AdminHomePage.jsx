@@ -8,6 +8,7 @@ import {
 import AdminMediaField from "../../components/admin/AdminMediaField";
 import http from "../../api/http";
 import useUnsavedChanges from "../../hooks/useUnsavedChanges";
+import { mergeAdvertisingPortfolio } from "../../data/advertisingPortfolio";
 const defaultHome = {
   hero: {
     eyebrow: "",
@@ -44,8 +45,8 @@ const defaultHome = {
     title: "",
     description: "",
   },
-  processSteps: [],
-  aboutPreview: {
+processSteps: [],
+aboutPreview: {
     eyebrow: "",
     title: "",
     description: "",
@@ -100,11 +101,15 @@ const mergeHomeData = (data = {}) => ({
     ...data.processIntro,
   },
 
-  processSteps: Array.isArray(data.processSteps)
-    ? data.processSteps
-    : [],
+processSteps: Array.isArray(data.processSteps)
+  ? data.processSteps
+  : [],
 
-  aboutPreview: {
+advertisingPortfolio: mergeAdvertisingPortfolio(
+  data.advertisingPortfolio
+),
+
+aboutPreview: {
     ...defaultHome.aboutPreview,
     ...data.aboutPreview,
   },
@@ -288,7 +293,30 @@ setSavedForm(structuredClone(homeData));
       };
     });
   };
+const updateAdvertisingProject = (
+  index,
+  field,
+  value
+) => {
+  setForm((currentForm) => ({
+    ...currentForm,
+    advertisingPortfolio: {
+      ...currentForm.advertisingPortfolio,
+      projects:
+        currentForm.advertisingPortfolio.projects.map(
+          (project, projectIndex) =>
+            projectIndex === index
+              ? {
+                  ...project,
+                  [field]: value,
+                }
+              : project
+        ),
+    },
+  }));
 
+  setFeedback(null);
+};
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -390,6 +418,292 @@ setSavedForm(structuredClone(savedHome));
         className="admin-editor-form"
         onSubmit={handleSubmit}
       >
+        <section className="admin-editor-card">
+  <div className="admin-editor-card__heading">
+    <span>08</span>
+
+    <div>
+      <h2>Reklam tasarımları</h2>
+      <p>
+        Ana sayfadaki AdFolio alanını ve Behance sekmelerini
+        yönetir.
+      </p>
+    </div>
+  </div>
+
+  <label className="admin-check-field">
+    <input
+      type="checkbox"
+      checked={
+        form.advertisingPortfolio.isVisible !== false
+      }
+      onChange={(event) =>
+        updateField(
+          "advertisingPortfolio.isVisible",
+          event.target.checked
+        )
+      }
+    />
+
+    <span>Ana sayfadaki reklam tasarımları alanını göster</span>
+  </label>
+
+  <div className="admin-form-grid">
+    <label className="admin-form-field">
+      <span>Ana sayfa üst etiketi</span>
+      <input
+        type="text"
+        value={form.advertisingPortfolio.eyebrow}
+        onChange={(event) =>
+          updateField(
+            "advertisingPortfolio.eyebrow",
+            event.target.value
+          )
+        }
+      />
+    </label>
+
+    <label className="admin-form-field">
+      <span>Ana sayfa başlığı</span>
+      <input
+        type="text"
+        value={form.advertisingPortfolio.title}
+        onChange={(event) =>
+          updateField(
+            "advertisingPortfolio.title",
+            event.target.value
+          )
+        }
+      />
+    </label>
+
+    <label className="admin-form-field">
+      <span>Ana sayfa açıklaması</span>
+      <textarea
+        rows="4"
+        value={form.advertisingPortfolio.description}
+        onChange={(event) =>
+          updateField(
+            "advertisingPortfolio.description",
+            event.target.value
+          )
+        }
+      />
+    </label>
+
+    <label className="admin-form-field">
+      <span>Ana sayfa buton metni</span>
+      <input
+        type="text"
+        value={form.advertisingPortfolio.buttonLabel}
+        onChange={(event) =>
+          updateField(
+            "advertisingPortfolio.buttonLabel",
+            event.target.value
+          )
+        }
+      />
+    </label>
+
+    <label className="admin-form-field">
+      <span>Sayfa üst etiketi</span>
+      <input
+        type="text"
+        value={form.advertisingPortfolio.pageKicker}
+        onChange={(event) =>
+          updateField(
+            "advertisingPortfolio.pageKicker",
+            event.target.value
+          )
+        }
+      />
+    </label>
+
+    <label className="admin-form-field">
+      <span>Sayfa başlığı</span>
+      <input
+        type="text"
+        value={form.advertisingPortfolio.pageTitle}
+        onChange={(event) =>
+          updateField(
+            "advertisingPortfolio.pageTitle",
+            event.target.value
+          )
+        }
+      />
+    </label>
+
+    <label className="admin-form-field">
+      <span>Sayfa açıklaması</span>
+      <textarea
+        rows="4"
+        value={form.advertisingPortfolio.pageDescription}
+        onChange={(event) =>
+          updateField(
+            "advertisingPortfolio.pageDescription",
+            event.target.value
+          )
+        }
+      />
+    </label>
+  </div>
+
+  <div className="admin-repeatable-list">
+    {form.advertisingPortfolio.projects.map(
+      (project, index) => (
+        <article
+          className="admin-repeatable-item"
+          key={project.projectId || index}
+        >
+          <div className="admin-repeatable-item__heading">
+            <strong>Behance koleksiyonu {index + 1}</strong>
+
+            <label className="admin-check-field">
+              <input
+                type="checkbox"
+                checked={project.isVisible !== false}
+                onChange={(event) =>
+                  updateAdvertisingProject(
+                    index,
+                    "isVisible",
+                    event.target.checked
+                  )
+                }
+              />
+
+              <span>Yayınla</span>
+            </label>
+          </div>
+
+          <div className="admin-form-grid admin-form-grid--two">
+            <label className="admin-form-field">
+              <span>Sekme başlığı</span>
+              <input
+                type="text"
+                value={project.title || ""}
+                onChange={(event) =>
+                  updateAdvertisingProject(
+                    index,
+                    "title",
+                    event.target.value
+                  )
+                }
+              />
+            </label>
+
+            <label className="admin-form-field">
+              <span>Behance proje ID</span>
+              <input
+                type="text"
+                value={project.projectId || ""}
+                onChange={(event) =>
+                  updateAdvertisingProject(
+                    index,
+                    "projectId",
+                    event.target.value
+                  )
+                }
+              />
+            </label>
+
+            <label className="admin-form-field">
+              <span>Proje adresi</span>
+              <input
+                type="url"
+                value={project.projectUrl || ""}
+                onChange={(event) =>
+                  updateAdvertisingProject(
+                    index,
+                    "projectUrl",
+                    event.target.value
+                  )
+                }
+              />
+            </label>
+
+            <label className="admin-form-field">
+              <span>Embed adresi</span>
+              <input
+                type="url"
+                value={project.embedUrl || ""}
+                onChange={(event) =>
+                  updateAdvertisingProject(
+                    index,
+                    "embedUrl",
+                    event.target.value
+                  )
+                }
+              />
+            </label>
+
+            <label className="admin-form-field">
+              <span>Behance kapak adresi</span>
+              <input
+                type="url"
+                value={project.coverUrl || ""}
+                onChange={(event) =>
+                  updateAdvertisingProject(
+                    index,
+                    "coverUrl",
+                    event.target.value
+                  )
+                }
+              />
+            </label>
+
+            <label className="admin-form-field">
+              <span>Sıralama</span>
+              <input
+                type="number"
+                min="0"
+                value={project.order ?? index + 1}
+                onChange={(event) =>
+                  updateAdvertisingProject(
+                    index,
+                    "order",
+                    Number(event.target.value)
+                  )
+                }
+              />
+            </label>
+          </div>
+        </article>
+      )
+    )}
+  </div>
+
+  <div className="admin-form-grid admin-form-grid--two">
+    <label className="admin-form-field">
+      <span>Sayfa SEO başlığı</span>
+      <input
+        type="text"
+        maxLength="70"
+        value={form.advertisingPortfolio.seo.title}
+        onChange={(event) =>
+          updateField(
+            "advertisingPortfolio.seo.title",
+            event.target.value
+          )
+        }
+      />
+    </label>
+
+    <label className="admin-form-field">
+      <span>Sayfa SEO açıklaması</span>
+      <textarea
+        rows="3"
+        maxLength="170"
+        value={form.advertisingPortfolio.seo.description}
+        onChange={(event) =>
+          updateField(
+            "advertisingPortfolio.seo.description",
+            event.target.value
+          )
+        }
+      />
+    </label>
+  </div>
+</section>
         <section className="admin-editor-card">
           <div className="admin-editor-card__heading">
             <span>01</span>
@@ -942,7 +1256,7 @@ setSavedForm(structuredClone(savedHome));
 
         <section className="admin-editor-card">
           <div className="admin-editor-card__heading">
-            <span>08</span>
+            <span>09</span>
 
             <div>
               <h2>SEO ayarları</h2>
