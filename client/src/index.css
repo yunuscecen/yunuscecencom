@@ -6618,3 +6618,292 @@ body {
 .site-header.is-home .brand__text {
   gap: 0;
 }
+
+/* Sticky header — scroll sonrası degrade arka plan */
+
+.site-header {
+  isolation: isolate;
+  transition:
+    background 300ms ease,
+    border-color 300ms ease,
+    box-shadow 300ms ease,
+    backdrop-filter 300ms ease;
+}
+
+.site-header__inner {
+  position: relative;
+  z-index: 2;
+}
+
+/* Hareketli degrade katmanı */
+
+.site-header::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 5%,
+    rgba(79, 124, 255, 0.1) 28%,
+    rgba(66, 216, 245, 0.045) 45%,
+    rgba(165, 108, 255, 0.085) 68%,
+    transparent 94%
+  );
+  background-position: 0% 50%;
+  background-size: 240% 100%;
+  opacity: 0;
+  pointer-events: none;
+  content: "";
+  transition: opacity 300ms ease;
+}
+
+/* Alttan geçen ince sinyal ışığı */
+
+.site-header::after {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  z-index: 3;
+  width: clamp(8rem, 18vw, 18rem);
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(79, 124, 255, 0.8),
+    rgba(66, 216, 245, 0.75),
+    rgba(165, 108, 255, 0.65),
+    transparent
+  );
+  filter: drop-shadow(
+    0 0 0.45rem rgba(79, 124, 255, 0.5)
+  );
+  opacity: 0;
+  pointer-events: none;
+  content: "";
+  transform: translateX(-150%);
+}
+
+/* Sayfa aşağı kaydırıldığındaki görünüm */
+
+.site-header.is-scrolled {
+  border-bottom-color: rgba(142, 175, 255, 0.15);
+  background: rgba(9, 10, 14, 0.93);
+  box-shadow:
+    0 1rem 3rem rgba(0, 0, 0, 0.18),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.015);
+  backdrop-filter: blur(24px) saturate(125%);
+}
+
+.site-header.is-scrolled::before {
+  opacity: 0.72;
+  animation: header-gradient-flow 12s ease-in-out infinite;
+}
+
+.site-header.is-scrolled::after {
+  opacity: 0.8;
+  animation: header-signal-flow 9s ease-in-out infinite;
+}
+
+@keyframes header-gradient-flow {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes header-signal-flow {
+  0%,
+  15% {
+    opacity: 0;
+    transform: translateX(-150%);
+  }
+
+  35%,
+  65% {
+    opacity: 0.8;
+  }
+
+  85%,
+  100% {
+    opacity: 0;
+    transform: translateX(calc(100vw + 150%));
+  }
+}
+
+/* Mobil menünün arka planını korur */
+
+@media (max-width: 1080px) {
+  .site-header.is-scrolled {
+    background: #090a0d;
+    backdrop-filter: none;
+  }
+
+  .site-header.is-scrolled::before {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header.is-scrolled::before,
+  .site-header.is-scrolled::after {
+    animation: none;
+  }
+
+  .site-header.is-scrolled::after {
+    display: none;
+  }
+}
+
+/* Sosyal ikon hover'ının hero arka planına etkisi */
+
+.showcase__canvas {
+  --hero-social-primary: 79, 124, 255;
+  --hero-social-secondary: 165, 108, 255;
+}
+
+/* Dinamik renk aura katmanı */
+
+.showcase__canvas::after {
+  position: absolute;
+  inset: -12%;
+  z-index: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(
+      circle at 48% 48%,
+      rgba(var(--hero-social-primary), 0.2),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 68% 34%,
+      rgba(var(--hero-social-secondary), 0.14),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 30% 72%,
+      rgba(var(--hero-social-primary), 0.08),
+      transparent 38%
+    );
+  filter: blur(18px);
+  opacity: 0;
+  pointer-events: none;
+  content: "";
+  transform: scale(0.94);
+  transition:
+    opacity 260ms ease,
+    transform 500ms ease;
+}
+
+/* Herhangi bir sosyal ikon aktif olduğunda aurayı gösterir */
+
+.showcase__canvas:has(
+    .showcase__social-link:hover
+  )::after,
+.showcase__canvas:has(
+    .showcase__social-link:focus-visible
+  )::after {
+  opacity: 1;
+  transform: scale(1);
+  animation: hero-social-aura 6s ease-in-out infinite;
+}
+
+/* GitHub — gri ve mor */
+
+.showcase__canvas:has(
+    .showcase__social-link.is-github:hover
+  ),
+.showcase__canvas:has(
+    .showcase__social-link.is-github:focus-visible
+  ) {
+  --hero-social-primary: 215, 220, 232;
+  --hero-social-secondary: 121, 87, 213;
+}
+
+/* Behance — elektrik mavisi ve cyan */
+
+.showcase__canvas:has(
+    .showcase__social-link.is-behance:hover
+  ),
+.showcase__canvas:has(
+    .showcase__social-link.is-behance:focus-visible
+  ) {
+  --hero-social-primary: 23, 105, 255;
+  --hero-social-secondary: 66, 216, 245;
+}
+
+/* LinkedIn — kurumsal mavi ve açık mavi */
+
+.showcase__canvas:has(
+    .showcase__social-link.is-linkedin:hover
+  ),
+.showcase__canvas:has(
+    .showcase__social-link.is-linkedin:focus-visible
+  ) {
+  --hero-social-primary: 10, 102, 194;
+  --hero-social-secondary: 70, 170, 255;
+}
+
+/* Upwork — yeşil ve cyan */
+
+.showcase__canvas:has(
+    .showcase__social-link.is-upwork:hover
+  ),
+.showcase__canvas:has(
+    .showcase__social-link.is-upwork:focus-visible
+  ) {
+  --hero-social-primary: 20, 168, 0;
+  --hero-social-secondary: 89, 226, 120;
+}
+
+/* Arka plandaki sinyal ağı da renge hafif tepki verir */
+
+.signal-field {
+  transition:
+    filter 300ms ease,
+    opacity 300ms ease;
+}
+
+.showcase__canvas:has(
+    .showcase__social-link:hover
+  )
+  .signal-field,
+.showcase__canvas:has(
+    .showcase__social-link:focus-visible
+  )
+  .signal-field {
+  filter: drop-shadow(
+    0 0 1.5rem
+      rgba(var(--hero-social-primary), 0.16)
+  );
+  opacity: 0.82;
+}
+
+@keyframes hero-social-aura {
+  0%,
+  100% {
+    transform:
+      translate3d(-1%, 0, 0)
+      scale(0.97);
+  }
+
+  50% {
+    transform:
+      translate3d(1%, -1%, 0)
+      scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .showcase__canvas:has(
+      .showcase__social-link:hover
+    )::after,
+  .showcase__canvas:has(
+      .showcase__social-link:focus-visible
+    )::after {
+    animation: none;
+  }
+}

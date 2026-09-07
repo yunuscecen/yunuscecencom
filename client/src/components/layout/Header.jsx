@@ -8,7 +8,7 @@ const Header = () => {
   const { settings } = useSiteSettings();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
-
+const [scrolled, setScrolled] = useState(false);
   const navigation = [...(settings.navigation || [])]
     .filter((item) => item.isVisible !== false)
     .sort((a, b) => a.order - b.order);
@@ -32,7 +32,21 @@ const Header = () => {
         (item) => item.href !== contactHref
       )
     : navigation;
+useEffect(() => {
+  const handleScroll = () => {
+    setScrolled(window.scrollY > 24);
+  };
 
+  handleScroll();
+
+  window.addEventListener("scroll", handleScroll, {
+    passive: true,
+  });
+
+  return () => {
+    window.removeEventListener("scroll", handleScroll);
+  };
+}, []);
   useEffect(() => {
     setMenuOpen(false);
   }, [location.pathname]);
@@ -91,10 +105,14 @@ const Header = () => {
   };
 
   return (
-   <header
-  className={`site-header ${
-    location.pathname === "/" ? "is-home" : ""
-  }`}
+  <header
+  className={[
+    "site-header",
+    location.pathname === "/" ? "is-home" : "",
+    scrolled ? "is-scrolled" : "",
+  ]
+    .filter(Boolean)
+    .join(" ")}
 >
       <div className="site-header__inner">
         <Link
