@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { ArrowUpRight, Menu, X } from "lucide-react";
-
+import BrandName from "../ui/BrandName";
 import { useSiteSettings } from "../../context/SiteContext";
 
 const Header = () => {
@@ -112,7 +112,10 @@ const Header = () => {
           </span>
 
           <span className="brand__text">
-            <strong>{settings.brand?.name}</strong>
+            <BrandName
+  as="strong"
+  name={settings.brand?.name}
+/>
             <small>{settings.brand?.profession}</small>
           </span>
         </Link>

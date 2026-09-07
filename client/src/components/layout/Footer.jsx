@@ -2,7 +2,7 @@ import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { useSiteSettings } from "../../context/SiteContext";
-
+import BrandName from "../ui/BrandName";
 const Footer = () => {
   const { settings } = useSiteSettings();
 
@@ -57,7 +57,10 @@ const Footer = () => {
 
       <div className="site-footer__bottom">
         <div>
-          <strong>{settings.brand?.name}</strong>
+          <BrandName
+  as="strong"
+  name={settings.brand?.name}
+/>
           <p>{settings.brand?.profession}</p>
         </div>
 
@@ -82,9 +85,10 @@ const Footer = () => {
         )}
 
         <p>
-          © {currentYear} {settings.brand?.name}.{" "}
-          {settings.footer?.copyrightText}
-        </p>
+  © {currentYear}{" "}
+  <BrandName name={settings.brand?.name} />.{" "}
+  {settings.footer?.copyrightText}
+</p>
       </div>
     </footer>
   );

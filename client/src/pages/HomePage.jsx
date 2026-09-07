@@ -16,7 +16,7 @@ import {
   SiTypescript,
   SiWordpress,
 } from "react-icons/si";
-
+import BrandName from "../components/ui/BrandName";
 import {
   DiIllustrator,
   DiPhotoshop,
@@ -217,7 +217,10 @@ return (
             <div className="showcase__identity">
   <p>{home.hero?.eyebrow}</p>
 
-  <h1>{settings.brand?.name}</h1>
+  <BrandName
+  as="h1"
+  name={settings.brand?.name}
+/>
 
   <div className="showcase__portrait">
     <img
