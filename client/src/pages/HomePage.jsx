@@ -8,14 +8,18 @@ import {
   Sparkles,
 } from "lucide-react";
 import {
+  SiBehance,
   SiExpress,
   SiFigma,
+  SiGithub,
   SiMongodb,
   SiNodedotjs,
   SiReact,
   SiTypescript,
+  SiUpwork,
   SiWordpress,
 } from "react-icons/si";
+import { FaLinkedinIn } from "react-icons/fa6";
 import BrandName from "../components/ui/BrandName";
 import {
   DiIllustrator,
@@ -31,6 +35,32 @@ import { mergeAdvertisingPortfolio } from "../data/advertisingPortfolio";
 
 
 const serviceIcons = [Braces, Layers3, PenTool, Sparkles];
+const heroSocialLinks = [
+  {
+    name: "GitHub",
+    url: "https://github.com/yunuscecen",
+    className: "is-github",
+    Icon: SiGithub,
+  },
+  {
+    name: "Behance",
+    url: "https://www.behance.net/yunusccn",
+    className: "is-behance",
+    Icon: SiBehance,
+  },
+  {
+    name: "LinkedIn",
+    url: "https://www.linkedin.com/in/yunuscecen/",
+    className: "is-linkedin",
+    Icon: FaLinkedinIn,
+  },
+  {
+    name: "Upwork",
+    url: "https://www.upwork.com/freelancers/~0197449027a5bf721f?viewMode=1",
+    className: "is-upwork",
+    Icon: SiUpwork,
+  },
+];
 const technologyLogos = [
   {
     name: "MongoDB",
@@ -227,16 +257,42 @@ return (
   name={settings.brand?.name}
 />
 
-  <div className="showcase__portrait">
-    <img
-      src="/yunuscecen.jpeg"
-      alt="Yunus Çeçen"
-      width="96"
-      height="96"
-    />
-  </div>
+<div className="showcase__portrait">
+  <img
+    src="/yunuscecen.jpeg"
+    alt="Yunus Çeçen"
+    width="96"
+    height="96"
+  />
+</div>
 
-  <span>{settings.brand?.profession}</span>
+<nav
+  className="showcase__socials notranslate"
+  aria-label="Profesyonel profiller"
+  translate="no"
+>
+  {heroSocialLinks.map(
+    ({ name, url, className, Icon }) => (
+      <a
+        className={`showcase__social-link ${className}`}
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`${name} profilini yeni sekmede aç`}
+        key={name}
+      >
+        <Icon aria-hidden="true" />
+
+        <span className="showcase__social-tooltip">
+          {name}
+        </span>
+      </a>
+    )
+  )}
+</nav>
+
+<span>{settings.brand?.profession}</span>
+
 </div>
 
             <div className="showcase__actions">

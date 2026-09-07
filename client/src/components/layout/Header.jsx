@@ -91,7 +91,11 @@ const Header = () => {
   };
 
   return (
-    <header className="site-header">
+   <header
+  className={`site-header ${
+    location.pathname === "/" ? "is-home" : ""
+  }`}
+>
       <div className="site-header__inner">
         <Link
           className="brand"
