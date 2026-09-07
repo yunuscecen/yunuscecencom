@@ -259,6 +259,20 @@ const AdminSettingsPage = () => {
     }
 
     if (
+      form.header.showContactButton &&
+      !form.header.contactLabel.trim()
+    ) {
+      return "Header buton metni boş bırakılamaz.";
+    }
+
+    if (
+      form.header.showContactButton &&
+      !form.header.contactHref.trim()
+    ) {
+      return "Header buton bağlantısı boş bırakılamaz.";
+    }
+
+    if (
       form.navigation.some(
         (item) =>
           !item.label?.trim() || !item.href?.trim()

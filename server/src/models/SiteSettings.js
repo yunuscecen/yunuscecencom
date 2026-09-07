@@ -96,7 +96,7 @@ const siteSettingsSchema = new mongoose.Schema(
     header: {
       contactLabel: {
         type: String,
-        default: "Proje konuşalım",
+        default: "Projenizi Konuşalım",
         trim: true,
       },
       contactHref: {

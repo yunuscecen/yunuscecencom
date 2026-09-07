@@ -22,7 +22,7 @@ const fallbackSettings = {
   },
 
   header: {
-    contactLabel: "Proje konuşalım",
+    contactLabel: "Projenizi Konuşalım",
     contactHref: "/iletisim",
     showContactButton: true,
   },

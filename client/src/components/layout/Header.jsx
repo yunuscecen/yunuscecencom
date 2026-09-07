@@ -13,10 +13,25 @@ const Header = () => {
     .filter((item) => item.isVisible !== false)
     .sort((a, b) => a.order - b.order);
 
-  const contactHref =
-    settings.header?.contactHref || "/iletisim";
+  const contactLabel =
+    settings.header?.contactLabel?.trim() ||
+    "Projenizi Konuşalım";
 
-  const contactIsExternal = /^https?:\/\//i.test(contactHref);
+  const contactHref =
+    settings.header?.contactHref?.trim() ||
+    "/iletisim";
+
+  const showContactButton =
+    settings.header?.showContactButton !== false;
+
+  const contactIsExternal =
+    /^https?:\/\//i.test(contactHref);
+
+  const desktopNavigation = showContactButton
+    ? navigation.filter(
+        (item) => item.href !== contactHref
+      )
+    : navigation;
 
   useEffect(() => {
     setMenuOpen(false);
@@ -106,12 +121,12 @@ const Header = () => {
           className="desktop-navigation"
           aria-label="Ana navigasyon"
         >
-          {navigation.map((item) =>
+          {desktopNavigation.map((item) =>
             renderNavigationItem(item)
           )}
         </nav>
 
-        {settings.header?.showContactButton !== false &&
+        {showContactButton &&
           (contactIsExternal ? (
             <a
               className="header-contact"
@@ -119,7 +134,7 @@ const Header = () => {
               target="_blank"
               rel="noreferrer"
             >
-              {settings.header?.contactLabel}
+              {contactLabel}
               <ArrowUpRight size={17} aria-hidden="true" />
             </a>
           ) : (
@@ -127,7 +142,7 @@ const Header = () => {
               className="header-contact"
               to={contactHref}
             >
-              {settings.header?.contactLabel}
+              {contactLabel}
               <ArrowUpRight size={17} aria-hidden="true" />
             </Link>
           ))}
