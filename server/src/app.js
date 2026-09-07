@@ -4,6 +4,8 @@ import helmet from "helmet";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
+import authRoutes from "./routes/authRoutes.js";
+
 
 import {
   errorHandler,
@@ -53,6 +55,8 @@ const apiLimiter = rateLimit({
 });
 
 app.use("/api", apiLimiter);
+app.use("/api/auth", authRoutes);
+
 
 app.get("/api/health", (req, res) => {
   res.status(200).json({
@@ -62,16 +66,7 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-/*
-  API rotalarını daha sonra buraya ekleyeceğiz:
 
-  app.use("/api/auth", authRoutes);
-  app.use("/api/projects", projectRoutes);
-  app.use("/api/settings", settingsRoutes);
-  app.use("/api/about", aboutRoutes);
-  app.use("/api/services", serviceRoutes);
-  app.use("/api/contact", contactRoutes);
-*/
 
 app.use(notFound);
 app.use(errorHandler);
