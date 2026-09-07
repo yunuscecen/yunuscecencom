@@ -1,6 +1,7 @@
 import "dotenv/config";
 import mongoose from "mongoose";
 import { configureCloudinary } from "./config/cloudinary.js";
+import { validateEnvironment } from "./config/env.js";
 import app from "./app.js";
 import { connectDB } from "./config/db.js";
 
@@ -10,6 +11,7 @@ let server;
 
 const startServer = async () => {
   try {
+    validateEnvironment();
     configureCloudinary();
     await connectDB();
 

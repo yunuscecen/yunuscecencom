@@ -1,7 +1,13 @@
 import "dotenv/config";
 import { v2 as cloudinary } from "cloudinary";
 
+let configured = false;
+
 export const configureCloudinary = () => {
+  if (configured) {
+    return cloudinary;
+  }
+
   const requiredVariables = [
     "CLOUDINARY_CLOUD_NAME",
     "CLOUDINARY_API_KEY",
@@ -9,7 +15,7 @@ export const configureCloudinary = () => {
   ];
 
   const missingVariables = requiredVariables.filter(
-    (variable) => !process.env[variable]
+    (variable) => !process.env[variable]?.trim()
   );
 
   if (missingVariables.length > 0) {
@@ -25,9 +31,9 @@ export const configureCloudinary = () => {
     secure: true,
   });
 
+  configured = true;
+
   return cloudinary;
 };
 
-const cloudinaryClient = configureCloudinary();
-
-export default cloudinaryClient;
+export default cloudinary;
