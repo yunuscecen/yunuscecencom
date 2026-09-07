@@ -66,47 +66,65 @@ const technologyLogos = [
     name: "MongoDB",
     category: "Database",
     Icon: SiMongodb,
+    description:
+      "Proje verilerini esnek, yönetilebilir ve büyümeye hazır bir yapıda saklayan altyapılar kuruyorum.",
   },
   {
     name: "Express",
     category: "Backend",
     Icon: SiExpress,
+    description:
+      "Yönetim panellerini ve iş süreçlerini destekleyen güvenli, hızlı ve sürdürülebilir API servisleri geliştiriyorum.",
   },
   {
     name: "React",
     category: "Frontend",
     Icon: SiReact,
+    description:
+      "Markanıza özel, hızlı ve farklı ekranlara uyum sağlayan modern kullanıcı deneyimleri oluşturuyorum.",
   },
   {
     name: "Node.js",
     category: "Runtime",
     Icon: SiNodedotjs,
+    description:
+      "Web uygulamalarının arka planında çalışan performanslı ve geliştirilebilir sunucu sistemleri hazırlıyorum.",
   },
-    {
+  {
     name: "TypeScript",
     category: "Language",
     Icon: SiTypescript,
+    description:
+      "Daha az hata üreten, bakımı kolay ve uzun vadede güvenle geliştirilebilen kod tabanları oluşturuyorum.",
   },
   {
     name: "WordPress",
     category: "CMS",
     Icon: SiWordpress,
+    description:
+      "İçeriği kolayca yönetilebilen kurumsal siteler, portfolyolar ve ihtiyaca özel WordPress çözümleri sunuyorum.",
   },
   {
     name: "Figma",
     category: "UI / UX",
     Icon: SiFigma,
+    description:
+      "Kullanıcı akışlarından geliştirilmeye hazır ekranlara kadar tutarlı ve işlevsel arayüz sistemleri tasarlıyorum.",
   },
   {
-  name: "Photoshop",
-  category: "Visual Design",
-  Icon: DiPhotoshop,
-},
-{
-  name: "Illustrator",
-  category: "Vector Design",
-  Icon: DiIllustrator,
-},
+    name: "Photoshop",
+    category: "Visual Design",
+    Icon: DiPhotoshop,
+    description:
+      "Reklam görselleri, sosyal medya içerikleri ve marka iletişimini güçlendiren dijital tasarımlar hazırlıyorum.",
+  },
+  {
+    name: "Illustrator",
+    category: "Vector Design",
+    Icon: DiIllustrator,
+    description:
+      "Logo, ikon ve farklı ölçülerde kalitesini koruyan profesyonel vektörel marka materyalleri tasarlıyorum.",
+  },
 ];
 const renderHighlightedTitle = (title, highlightedText) => {
   if (!highlightedText || !title.includes(highlightedText)) {
@@ -352,16 +370,36 @@ return (
         </div>
 
         <div className="technology-rail__logos">
-          {technologyLogos.map(({ name, category, Icon }) => (
-            <div className="technology-logo" key={name}>
-              <Icon aria-hidden="true" />
+          {technologyLogos.map(
+  ({ name, category, description, Icon }, index) => {
+    const tooltipId = `technology-tooltip-${index}`;
 
-              <div>
-                <strong>{name}</strong>
-                <span>{category}</span>
-              </div>
-            </div>
-          ))}
+    return (
+      <div
+        className="technology-logo"
+        key={name}
+        tabIndex={0}
+        aria-describedby={tooltipId}
+      >
+        <Icon aria-hidden="true" />
+
+        <div className="technology-logo__content">
+          <strong>{name}</strong>
+          <span>{category}</span>
+        </div>
+
+        <div
+          className="technology-logo__tooltip"
+          id={tooltipId}
+          role="tooltip"
+        >
+          
+          <p>{description}</p>
+        </div>
+      </div>
+    );
+  }
+)}
         </div>
       </section>
 

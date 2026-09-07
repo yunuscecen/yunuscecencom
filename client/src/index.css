@@ -7056,3 +7056,184 @@ body:has(.technology-logo:nth-child(9):hover) {
     animation: none;
   }
 }
+
+/* Stack / Tools — teknoloji açıklama tooltipleri */
+
+.technology-rail,
+.technology-rail__logos,
+.technology-logo {
+  overflow: visible;
+}
+
+.technology-logo {
+  outline: none;
+}
+
+/* Tooltip kutusu */
+
+.technology-logo__tooltip {
+  --tooltip-x: -50%;
+
+  position: absolute !important;
+  bottom: calc(100% + 0.85rem);
+  left: 50%;
+  z-index: 40 !important;
+  display: block !important;
+  width: min(18rem, calc(100vw - 2rem));
+  padding: 1rem 1.05rem;
+  border: 1px solid rgba(var(--tool-accent), 0.26);
+  border-radius: 0.75rem;
+  background:
+    radial-gradient(
+      circle at 15% 10%,
+      rgba(var(--tool-accent), 0.14),
+      transparent 48%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(var(--tool-secondary), 0.06),
+      transparent 52%
+    ),
+    rgba(12, 14, 20, 0.97);
+  box-shadow:
+    0 1.25rem 3rem rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.045);
+  opacity: 0;
+  pointer-events: none;
+  transform:
+    translate(var(--tooltip-x), 0.65rem)
+    scale(0.98);
+  transform-origin: bottom center;
+  visibility: hidden;
+  backdrop-filter: blur(18px);
+  transition:
+    opacity 200ms ease,
+    transform 260ms ease,
+    visibility 0s linear 200ms;
+}
+
+/* Tooltip üst başlığı */
+
+
+
+/* Tooltip açıklaması */
+
+.technology-logo__tooltip p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 0.78rem;
+  line-height: 1.65;
+}
+
+/* Tooltip altındaki renkli sinyal çizgisi */
+
+.technology-logo__tooltip::before {
+  position: absolute;
+  right: 1rem;
+  bottom: 0;
+  left: 1rem;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(var(--tool-accent), 0.75),
+    rgba(var(--tool-secondary), 0.55),
+    transparent
+  );
+  box-shadow: 0 0 0.8rem rgba(var(--tool-accent), 0.32);
+  content: "";
+}
+
+/* Hover ve klavye odağında tooltipi göster */
+
+.technology-logo:hover .technology-logo__tooltip,
+.technology-logo:focus-visible .technology-logo__tooltip {
+  opacity: 1;
+  transform:
+    translate(var(--tooltip-x), 0)
+    scale(1);
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+/* Klavyeyle odaklandığında kart hover görünümünü korur */
+
+.technology-logo:focus-visible {
+  z-index: 30;
+  filter: grayscale(0);
+  opacity: 1;
+  transform: translateY(-0.3rem);
+}
+
+.technology-logo:focus-visible::after {
+  opacity: 1;
+}
+
+.technology-logo:focus-visible::before {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+/* Sağdaki son tooltipin ekran dışına taşmasını engeller */
+
+.technology-logo:last-child
+  .technology-logo__tooltip {
+  --tooltip-x: 0%;
+
+  right: 0;
+  left: auto;
+}
+
+/* Tablet: üçlü grid kenarlarındaki tooltipleri hizala */
+
+@media (max-width: 1200px) and (min-width: 561px) {
+  .technology-logo:nth-child(3n + 1)
+    .technology-logo__tooltip {
+    --tooltip-x: 0%;
+
+    right: auto;
+    left: 0;
+  }
+
+  .technology-logo:nth-child(3n)
+    .technology-logo__tooltip {
+    --tooltip-x: 0%;
+
+    right: 0;
+    left: auto;
+  }
+}
+
+/* Mobil: tooltiplerin ekran dışına çıkmasını engeller */
+
+@media (max-width: 560px) {
+  .technology-logo
+    .technology-logo__tooltip {
+    --tooltip-x: -50%;
+
+    right: auto;
+    left: 50%;
+  }
+
+  .technology-logo:nth-child(odd):not(:last-child)
+    .technology-logo__tooltip {
+    --tooltip-x: 0%;
+
+    right: auto;
+    left: 0;
+  }
+
+  .technology-logo:nth-child(even)
+    .technology-logo__tooltip {
+    --tooltip-x: 0%;
+
+    right: 0;
+    left: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .technology-logo__tooltip {
+    transition: none;
+  }
+}
