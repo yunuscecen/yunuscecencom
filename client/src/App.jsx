@@ -12,7 +12,7 @@ import ProjectsPage from "./pages/ProjectsPage";
 import ServicesPage from "./pages/ServicesPage";
 import AdminMediaPage from "./pages/admin/AdminMediaPage";
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
-import AdminPlaceholderPage from "./pages/admin/AdminPlaceholderPage";
+import Seo from "./components/Seo";
 import DashboardPage from "./pages/admin/DashboardPage";
 import AdminHomePage from "./pages/admin/AdminHomePage";
 import AdminAboutPage from "./pages/admin/AdminAboutPage";
@@ -22,14 +22,22 @@ import AdminProjectsPage from "./pages/admin/AdminProjectsPage";
 import AdminMessagesPage from "./pages/admin/AdminMessagesPage";
 import AdminPageContentPage from "./pages/admin/AdminPageContentPage";
 const NotFoundPage = () => (
-  <section className="page-state">
-    <span>404</span>
-    <h1>Bu sayfa bulunamadı.</h1>
+  <>
+    <Seo
+      title="Sayfa bulunamadı"
+      description="Aradığınız sayfa bulunamadı."
+      noIndex
+    />
 
-    <a className="light-button" href="/">
-      Ana sayfaya dön
-    </a>
-  </section>
+    <section className="page-state">
+      <span>404</span>
+      <h1>Bu sayfa bulunamadı.</h1>
+
+      <a className="light-button" href="/">
+        Ana sayfaya dön
+      </a>
+    </section>
+  </>
 );
 
 const App = () => {

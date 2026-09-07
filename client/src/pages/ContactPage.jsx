@@ -5,7 +5,7 @@ import { useSearchParams } from "react-router-dom";
 import http from "../api/http";
 import { usePageContent } from "../context/PageContentContext";
 import { useSiteSettings } from "../context/SiteContext";
-
+import Seo from "../components/Seo";
 const allowedServices = [
   "web-development",
   "wordpress",
@@ -133,7 +133,11 @@ const ContactPage = () => {
   }
 
   return (
-    <div className="contact-page">
+   <div className="contact-page">
+  <Seo
+    title={copy.seo?.title || "İletişim"}
+    description={copy.seo?.description}
+  />
       <header className="contact-page__hero">
         <p className="section-kicker">{copy.heroKicker}</p>
 

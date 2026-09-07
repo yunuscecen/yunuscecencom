@@ -117,6 +117,17 @@ const pageContentFields = [
           ),
         ],
       },
+            {
+        title: "SEO",
+        fields: [
+          field("projects.seo.title", "SEO başlığı"),
+          field(
+            "projects.seo.description",
+            "SEO açıklaması",
+            "textarea"
+          ),
+        ],
+      },
     ],
   },
   {
@@ -148,6 +159,17 @@ const pageContentFields = [
           field(
             "services.contactButtonLabel",
             "İletişim butonu"
+          ),
+        ],
+      },
+            {
+        title: "SEO",
+        fields: [
+          field("services.seo.title", "SEO başlığı"),
+          field(
+            "services.seo.description",
+            "SEO açıklaması",
+            "textarea"
           ),
         ],
       },
@@ -369,6 +391,17 @@ const pageContentFields = [
           field(
             "contact.budgetOptions.4.label",
             "Beşinci bütçe seçeneği"
+          ),
+        ],
+      },
+            {
+        title: "SEO",
+        fields: [
+          field("contact.seo.title", "SEO başlığı"),
+          field(
+            "contact.seo.description",
+            "SEO açıklaması",
+            "textarea"
           ),
         ],
       },

@@ -7,8 +7,7 @@ import { Link, useParams } from "react-router-dom";
 
 import http from "../api/http";
 import { usePageContent } from "../context/PageContentContext";
-import { useSiteSettings } from "../context/SiteContext";
-
+import Seo from "../components/Seo";
 const categoryLabels = {
   "web-development": "Web Development",
   wordpress: "WordPress",
@@ -20,7 +19,7 @@ const categoryLabels = {
 
 const ProjectDetailPage = () => {
   const { slug } = useParams();
-  const { settings } = useSiteSettings();
+  
 
   const {
     content: pageContent,
@@ -67,23 +66,7 @@ const ProjectDetailPage = () => {
     return () => controller.abort();
   }, [slug]);
 
-  useEffect(() => {
-    if (!project) {
-      return undefined;
-    }
 
-    const previousTitle = document.title;
-    const brandName =
-      settings.brand?.name || "Yunus Çeçen";
-
-    document.title =
-      project.seo?.title ||
-      `${project.title} | ${brandName}`;
-
-    return () => {
-      document.title = previousTitle;
-    };
-  }, [project, settings.brand?.name]);
 
   if (status === "loading" || pageContentLoading) {
     return (
@@ -135,7 +118,16 @@ const ProjectDetailPage = () => {
   ].filter((item) => item.url);
 
   return (
-    <article className="project-detail">
+   <article className="project-detail">
+  <Seo
+    title={project.seo?.title || project.title}
+    description={
+      project.seo?.description ||
+      project.shortDescription
+    }
+    image={project.coverImage?.url}
+    type="article"
+  />
       <header className="project-detail__hero">
         <Link className="back-link" to="/projeler">
           <ArrowLeft size={16} />

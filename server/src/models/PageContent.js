@@ -3,7 +3,23 @@ import mongoose from "mongoose";
 const schemaOptions = {
   _id: false,
 };
-
+const seoSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      default: "",
+      trim: true,
+      maxlength: 70,
+    },
+    description: {
+      type: String,
+      default: "",
+      trim: true,
+      maxlength: 170,
+    },
+  },
+  schemaOptions
+);
 const railItemSchema = new mongoose.Schema(
   {
     eyebrow: {
@@ -170,6 +186,14 @@ const projectsContentSchema = new mongoose.Schema(
       default: "Projeler",
       trim: true,
     },
+    seo: {
+  type: seoSchema,
+  default: () => ({
+    title: "Projeler",
+    description:
+      "Yazılım geliştirme, WordPress, UI/UX ve grafik tasarım projelerimi inceleyin.",
+  }),
+},
     description: {
       type: String,
       default:
@@ -218,6 +242,14 @@ const servicesContentSchema = new mongoose.Schema(
       default: "Services / Capabilities",
       trim: true,
     },
+    seo: {
+  type: seoSchema,
+  default: () => ({
+    title: "Hizmetler",
+    description:
+      "MERN web geliştirme, WordPress, UI/UX ve grafik tasarım hizmetlerimi keşfedin.",
+  }),
+},
     title: {
       type: String,
       default: "Bir fikrin ihtiyaç duyduğu teknik ve görsel sistem.",
@@ -417,6 +449,14 @@ const contactContentSchema = new mongoose.Schema(
       default: "Contact / Start a project",
       trim: true,
     },
+    seo: {
+  type: seoSchema,
+  default: () => ({
+    title: "İletişim",
+    description:
+      "Yeni bir yazılım veya tasarım projesi için benimle iletişime geçin.",
+  }),
+},
     title: {
       type: String,
       default: "Birlikte çalışan ve iz bırakan bir şey üretelim.",

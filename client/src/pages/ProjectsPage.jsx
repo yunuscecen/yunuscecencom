@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 import http from "../api/http";
 import { usePageContent } from "../context/PageContentContext";
-
+import Seo from "../components/Seo";
 const categoryLabels = {
   "web-development": "Web Development",
   wordpress: "WordPress",
@@ -57,7 +57,13 @@ const ProjectsPage = () => {
     status === "error" || pageContentError;
 
   return (
-    <div className="projects-page">
+  <div className="projects-page">
+  <Seo
+    title={copy.seo?.title || copy.title}
+    description={
+      copy.seo?.description || copy.description
+    }
+  />
       <header className="projects-page__hero">
         <p className="section-kicker">{copy.heroKicker}</p>
 

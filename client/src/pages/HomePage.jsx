@@ -8,7 +8,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-
+import Seo from "../components/Seo";
 import ManagedImage from "../components/ui/ManagedImage";
 import http from "../api/http";
 import { usePageContent } from "../context/PageContentContext";
@@ -116,13 +116,19 @@ const HomePage = () => {
     );
   };
 
-  const featuredProject = projects[0];
-  const otherProjects = projects.slice(1);
-  const currentYear = new Date().getFullYear();
+ const featuredProject = projects[0];
+const otherProjects = projects.slice(1);
+const currentYear = new Date().getFullYear();
 
-  return (
-    <>
-      {sectionIsVisible("hero") && (
+return (
+  <>
+    <Seo
+      title={home.seo?.title}
+      description={home.seo?.description}
+      image={home.featuredMedia?.url}
+    />
+
+    {sectionIsVisible("hero") && (
         <section className="showcase">
           <div className="showcase__canvas">
             <div className="signal-field" aria-hidden="true">

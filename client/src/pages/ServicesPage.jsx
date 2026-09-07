@@ -7,7 +7,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-
+import Seo from "../components/Seo";
 import ManagedImage from "../components/ui/ManagedImage";
 import http from "../api/http";
 import { usePageContent } from "../context/PageContentContext";
@@ -66,7 +66,13 @@ const ServicesPage = () => {
   }
 
   return (
-    <div className="services-page">
+   <div className="services-page">
+  <Seo
+    title={copy.seo?.title || copy.title}
+    description={
+      copy.seo?.description || copy.description
+    }
+  />
       <header className="services-page__hero">
         <p className="section-kicker">{copy.heroKicker}</p>
 
