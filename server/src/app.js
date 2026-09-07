@@ -12,7 +12,7 @@ import serviceRoutes from "./routes/serviceRoutes.js";
 import adminServiceRoutes from "./routes/adminServiceRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import adminMessageRoutes from "./routes/adminMessageRoutes.js";
-
+import adminMediaRoutes from "./routes/adminMediaRoutes.js";
 import {
   errorHandler,
   notFound,
@@ -79,7 +79,7 @@ app.use("/api/services", serviceRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/admin/services", adminServiceRoutes);
 app.use("/api/admin/messages", adminMessageRoutes);
-
+app.use("/api/admin/media", adminMediaRoutes);
 
 
 

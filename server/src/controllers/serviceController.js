@@ -7,6 +7,7 @@ const serviceFields = [
   "title",
   "slug",
   "type",
+  "coverImage",
   "summary",
   "description",
   "deliverables",

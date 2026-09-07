@@ -7,11 +7,11 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-
+import ManagedImage from "../components/ui/ManagedImage";
 import http from "../api/http";
 
-const icons = [Braces, Layers3, PenTool, Sparkles];
 
+const icons = [Braces, Layers3, PenTool, Sparkles];
 const contactServiceMap = {
   "mern-web-development": "web-development",
   "wordpress-development": "wordpress",
@@ -87,18 +87,28 @@ const ServicesPage = () => {
                 id={service.slug}
                 key={service._id}
               >
-                <div
-                  className={`service-detail__visual service-detail__visual--${
-                    (index % 4) + 1
-                  }`}
-                >
-                  <div className="service-detail__grid" />
-                  <Icon aria-hidden="true" />
+  {service.coverImage?.url ? (
+  <ManagedImage
+    className="service-detail__visual service-detail__visual--image"
+    src={service.coverImage.url}
+    alt={service.coverImage.alt || service.title}
+    badge={`${String(index + 1).padStart(2, "0")} / Service`}
+  />
+) : (
+  <div
+    className={`service-detail__visual service-detail__visual--${
+      (index % 4) + 1
+    }`}
+  >
+    <div className="service-detail__grid" />
 
-                  <span>
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                </div>
+    <Icon aria-hidden="true" />
+
+    <span>
+      {String(index + 1).padStart(2, "0")}
+    </span>
+  </div>
+)}
 
                 <div className="service-detail__content">
                   <p className="section-kicker">{service.type}</p>

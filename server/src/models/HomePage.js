@@ -1,4 +1,31 @@
 import mongoose from "mongoose";
+const mediaSchema = new mongoose.Schema(
+  {
+    url: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    publicId: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    alt: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    caption: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+  },
+  {
+    _id: false,
+  }
+);
 
 const ctaSchema = new mongoose.Schema(
   {
@@ -82,6 +109,10 @@ const homePageSchema = new mongoose.Schema(
         default: "Freelance Developer & Designer",
         trim: true,
       },
+      featuredMedia: {
+  type: mediaSchema,
+  default: () => ({}),
+},
       title: {
         type: String,
         default: "Kod ve tasarım arasında dijital deneyimler üretiyorum.",
@@ -226,3 +257,4 @@ const homePageSchema = new mongoose.Schema(
 );
 
 export default mongoose.model("HomePage", homePageSchema);
+

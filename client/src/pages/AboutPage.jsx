@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 import http from "../api/http";
 import { useSiteSettings } from "../context/SiteContext";
+import ManagedImage from "../components/ui/ManagedImage";
 
 const AboutPage = () => {
   const { settings } = useSiteSettings();
@@ -62,27 +63,14 @@ const AboutPage = () => {
           <p>{about.introduction}</p>
         </div>
 
-        <div className="about-portrait">
-          {about.profileImage?.url ? (
-            <img
-              src={about.profileImage.url}
-              alt={about.profileImage.alt || settings.brand?.name}
-            />
-          ) : (
-            <>
-              <div className="about-portrait__field" aria-hidden="true">
-                <span />
-                <span />
-                <span />
-              </div>
-
-              <div className="about-portrait__identity">
-                <strong>{settings.brand?.shortName}</strong>
-                <span>Development × Design</span>
-              </div>
-            </>
-          )}
-        </div>
+      <ManagedImage
+  className="about-portrait"
+  src={about.profileImage?.url}
+  alt={about.profileImage?.alt || settings.brand?.name}
+  label="Portre görseli — 4:5"
+  badge="Profile / 01"
+  loading="eager"
+/>
       </header>
 
       <section className="about-story">

@@ -1,5 +1,28 @@
 import mongoose from "mongoose";
 
+const imageSchema = new mongoose.Schema(
+  {
+    url: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    publicId: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    alt: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+  },
+  {
+    _id: false,
+  }
+);
+
 const serviceSchema = new mongoose.Schema(
   {
     title: {
@@ -29,6 +52,10 @@ const serviceSchema = new mongoose.Schema(
       type: String,
       default: "",
       trim: true,
+    },
+    coverImage: {
+      type: imageSchema,
+      default: () => ({}),
     },
     deliverables: {
       type: [String],

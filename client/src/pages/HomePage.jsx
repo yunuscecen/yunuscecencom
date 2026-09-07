@@ -8,6 +8,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import ManagedImage from "../components/ui/ManagedImage";
 
 import http from "../api/http";
 import { useSiteSettings } from "../context/SiteContext";
@@ -148,11 +149,11 @@ const HomePage = () => {
             </div>
 
             <span className="showcase__coordinate showcase__coordinate--left">
-              41.0082° N
+              CREATIVE WEB SOFTWARE AGENCY
             </span>
 
             <span className="showcase__coordinate showcase__coordinate--right">
-              28.9784° E
+              MINIMAL, CREATIVE AND INSPIRING DIGITAL EXPERIENCES
             </span>
           </div>
 
@@ -197,7 +198,24 @@ const HomePage = () => {
           {home.hero?.description}
         </p>
       </section>
+<section className="home-feature-media">
+  <ManagedImage
+    src={home.featuredMedia?.url}
+    alt={home.featuredMedia?.alt}
+    label="Ana sayfa vitrin görseli — 16:9"
+    badge="Featured visual / 01"
+    loading="eager"
+  />
 
+  <div className="home-feature-media__caption">
+    <span>
+      {home.featuredMedia?.caption ||
+        "Development × Design"}
+    </span>
+
+    <span>1600 × 900 önerilir</span>
+  </div>
+</section>
       {sectionIsVisible("projects") && featuredProject && (
         <section className="projects-showcase">
           <header className="content-heading">

@@ -8,9 +8,18 @@ export const errorHandler = (error, req, res, next) => {
     return next(error);
   }
 
-  let statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+ let statusCode =
+  error.statusCode ||
+  (res.statusCode === 200 ? 500 : res.statusCode);
   let message = error.message || "Sunucu hatası oluştu.";
+if (error.name === "MulterError") {
+  statusCode = 400;
 
+  message =
+    error.code === "LIMIT_FILE_SIZE"
+      ? "Görsel en fazla 8 MB olabilir."
+      : "Görsel yükleme işlemi geçersiz.";
+}
 if (error.name === "CastError") {
   statusCode = 400;
   message = "Geçersiz kayıt kimliği.";
