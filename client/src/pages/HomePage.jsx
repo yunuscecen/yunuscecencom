@@ -126,6 +126,38 @@ const technologyLogos = [
       "Logo, ikon ve farklı ölçülerde kalitesini koruyan profesyonel vektörel marka materyalleri tasarlıyorum.",
   },
 ];
+const activateProcessBodyBackground = (index) => {
+  const primaryHue = (212 + index * 43) % 360;
+  const secondaryHue = (258 + index * 43) % 360;
+
+  document.body.style.setProperty(
+    "--process-body-hue",
+    String(primaryHue)
+  );
+
+  document.body.style.setProperty(
+    "--process-body-hue-alt",
+    String(secondaryHue)
+  );
+
+  document.body.classList.add(
+    "has-process-background"
+  );
+};
+
+const clearProcessBodyBackground = () => {
+  document.body.classList.remove(
+    "has-process-background"
+  );
+
+  document.body.style.removeProperty(
+    "--process-body-hue"
+  );
+
+  document.body.style.removeProperty(
+    "--process-body-hue-alt"
+  );
+};
 const renderHighlightedTitle = (title, highlightedText) => {
   if (!highlightedText || !title.includes(highlightedText)) {
     return title;
@@ -190,7 +222,10 @@ const HomePage = () => {
 
     loadPage();
 
-    return () => controller.abort();
+    return () => {
+  controller.abort();
+  clearProcessBodyBackground();
+};
   }, []);
 
   if (status === "loading" || pageContentLoading) {
@@ -581,12 +616,16 @@ return (
       "--process-hue": `${(212 + index * 43) % 360}`,
       "--process-hue-alt": `${(258 + index * 43) % 360}`,
     }}
+    onMouseEnter={() =>
+      activateProcessBodyBackground(index)
+    }
+    onMouseLeave={clearProcessBodyBackground}
   >
-                  <span>{step.number}</span>
-                  <h3>{step.title}</h3>
-                  <p>{step.description}</p>
-                </article>
-              ))}
+    <span>{step.number}</span>
+    <h3>{step.title}</h3>
+    <p>{step.description}</p>
+  </article>
+))}
           </div>
         </section>
       )}

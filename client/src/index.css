@@ -7471,3 +7471,59 @@ body:has(
     animation: none;
   }
 }
+
+/* Çalışma biçimim — dinamik body arka planı */
+
+body.has-process-background::before {
+  background:
+    radial-gradient(
+      circle at 14% 25%,
+      hsl(
+        var(--process-body-hue)
+        88% 64% / 0.12
+      ),
+      transparent 36%
+    ),
+    radial-gradient(
+      circle at 86% 72%,
+      hsl(
+        var(--process-body-hue-alt)
+        82% 60% / 0.095
+      ),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 52% 105%,
+      hsl(
+        var(--process-body-hue)
+        75% 55% / 0.045
+      ),
+      transparent 44%
+    );
+  opacity: 0.82;
+  transform: scale(1);
+  animation:
+    process-body-background
+    8s ease-in-out infinite;
+}
+
+@keyframes process-body-background {
+  0%,
+  100% {
+    transform:
+      translate3d(-1%, 0, 0)
+      scale(0.98);
+  }
+
+  50% {
+    transform:
+      translate3d(1%, -1%, 0)
+      scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.has-process-background::before {
+    animation: none;
+  }
+}
