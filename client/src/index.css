@@ -7237,3 +7237,237 @@ body:has(.technology-logo:nth-child(9):hover) {
     transition: none;
   }
 }
+
+/* Neler yapıyorum — karta göre değişen section arka planı */
+
+.services-showcase {
+  --service-section-primary: 34, 84, 214;
+  --service-section-secondary: 79, 124, 255;
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+/* Section içerisindeki dinamik degrade */
+
+.services-showcase::before {
+  position: absolute;
+  inset: -8%;
+  z-index: 0;
+  background:
+    radial-gradient(
+      circle at 12% 30%,
+      rgba(var(--service-section-primary), 0.18),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 88% 68%,
+      rgba(var(--service-section-secondary), 0.14),
+      transparent 38%
+    ),
+    radial-gradient(
+      circle at 50% 105%,
+      rgba(var(--service-section-primary), 0.07),
+      transparent 42%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(var(--service-section-primary), 0.025),
+      transparent 48%,
+      rgba(var(--service-section-secondary), 0.035)
+    );
+  filter: blur(12px);
+  opacity: 0;
+  pointer-events: none;
+  content: "";
+  transform: scale(0.96);
+  transition:
+    opacity 320ms ease,
+    transform 600ms ease;
+}
+
+/* Başlık ve kartları degradenin üzerinde tutar */
+
+.services-showcase > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Herhangi bir hizmet kartına hover yapıldığında */
+
+.services-showcase:has(.service-card:hover)::before {
+  opacity: 1;
+  transform: scale(1);
+  animation: service-section-ambient 7s ease-in-out infinite;
+}
+
+/* 1, 5, 9... numaralı kartlar — mavi */
+
+.services-showcase:has(
+    .service-card:nth-child(4n + 1):hover
+  ) {
+  --service-section-primary: 34, 84, 214;
+  --service-section-secondary: 79, 124, 255;
+}
+
+/* 2, 6, 10... numaralı kartlar — cyan ve mor */
+
+.services-showcase:has(
+    .service-card:nth-child(4n + 2):hover
+  ) {
+  --service-section-primary: 20, 105, 137;
+  --service-section-secondary: 81, 70, 186;
+}
+
+/* 3, 7, 11... numaralı kartlar — mor */
+
+.services-showcase:has(
+    .service-card:nth-child(4n + 3):hover
+  ) {
+  --service-section-primary: 113, 58, 176;
+  --service-section-secondary: 165, 108, 255;
+}
+
+/* 4, 8, 12... numaralı kartlar — cyan ve lacivert */
+
+.services-showcase:has(
+    .service-card:nth-child(4n):hover
+  ) {
+  --service-section-primary: 30, 121, 165;
+  --service-section-secondary: 53, 76, 183;
+}
+
+/* Hover edilen kartın kenarlığını da aynı renge bağlar */
+
+.services-showcase:has(.service-card:hover)
+  .service-card:hover {
+  border-color: rgba(
+    var(--service-section-primary),
+    0.48
+  );
+  box-shadow:
+    0 1.5rem 4rem rgba(0, 0, 0, 0.2),
+    0 0 2rem
+      rgba(var(--service-section-primary), 0.1),
+    inset 0 1px 0
+      rgba(var(--service-section-secondary), 0.12);
+}
+
+/* Hafif ve yavaş hareket */
+
+@keyframes service-section-ambient {
+  0%,
+  100% {
+    transform:
+      translate3d(-1%, 0, 0)
+      scale(0.98);
+  }
+
+  50% {
+    transform:
+      translate3d(1%, -1%, 0)
+      scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .services-showcase:has(.service-card:hover)::before {
+    animation: none;
+  }
+}
+
+/* Hakkımda — Development ve Design body arka planı */
+
+/* Development — ilk kart */
+
+body:has(
+    .about-skills
+      .skill-groups
+      article:nth-child(1):hover
+  ) {
+  --site-tool-primary: 79, 124, 255;
+  --site-tool-secondary: 66, 216, 245;
+}
+
+/* Design — ikinci kart */
+
+body:has(
+    .about-skills
+      .skill-groups
+      article:nth-child(2):hover
+  ) {
+  --site-tool-primary: 165, 108, 255;
+  --site-tool-secondary: 236, 72, 153;
+}
+
+/* Kart hover olduğunda tüm body efektini göster */
+
+@media (hover: hover) and (pointer: fine) {
+  body:has(
+      .about-skills
+        .skill-groups
+        article:hover
+    )::before {
+    opacity: 0.78;
+    transform: scale(1);
+    animation:
+      about-skill-body-background
+      8s ease-in-out infinite;
+  }
+}
+
+/* Kartın kendisine hafif tepki */
+
+.skill-groups article {
+  position: relative;
+  transition:
+    border-color 260ms ease,
+    box-shadow 260ms ease,
+    transform 260ms ease;
+}
+
+body:has(
+    .about-skills
+      .skill-groups
+      article:hover
+  )
+  .skill-groups
+  article:hover {
+  border-color: rgba(
+    var(--site-tool-primary),
+    0.38
+  );
+  box-shadow:
+    0 1.5rem 4rem rgba(0, 0, 0, 0.18),
+    0 0 2rem
+      rgba(var(--site-tool-primary), 0.08),
+    inset 0 1px 0
+      rgba(var(--site-tool-secondary), 0.1);
+  transform: translateY(-0.3rem);
+}
+
+@keyframes about-skill-body-background {
+  0%,
+  100% {
+    transform:
+      translate3d(-1%, 0, 0)
+      scale(0.98);
+  }
+
+  50% {
+    transform:
+      translate3d(1%, -1%, 0)
+      scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body:has(
+      .about-skills
+        .skill-groups
+        article:hover
+    )::before {
+    animation: none;
+  }
+}
