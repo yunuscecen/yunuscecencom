@@ -25,7 +25,7 @@ const fallbackSettings = {
   contact: {
     email: "",
     location: "Türkiye",
-    availabilityText: "Yeni freelance projeler için müsait.",
+    availabilityText: "Yeni freelance projeler için müsaitim.",
   },
   socials: [],
   footer: {
