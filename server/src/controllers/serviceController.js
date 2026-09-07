@@ -1,7 +1,12 @@
 import Service from "../models/Service.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import pickFields from "../utils/pickFields.js";
+import validatePayload from "../utils/validatePayload.js";
 import { createUniqueSlug } from "../utils/slugify.js";
+import {
+  serviceCreateSchema,
+  serviceUpdateSchema,
+} from "../validators/serviceValidators.js";
 
 const serviceFields = [
   "title",
@@ -83,12 +88,11 @@ export const getAdminServiceById = asyncHandler(async (req, res) => {
 });
 
 export const createService = asyncHandler(async (req, res) => {
-  const serviceData = pickFields(req.body, serviceFields);
-
-  if (!serviceData.title) {
-    res.status(400);
-    throw new Error("Hizmet başlığı zorunludur.");
-  }
+  const serviceData = validatePayload(
+    serviceCreateSchema,
+    pickFields(req.body, serviceFields),
+    res
+  );
 
   serviceData.slug = await createUniqueSlug(
     Service,
@@ -112,7 +116,11 @@ export const updateService = asyncHandler(async (req, res) => {
     throw new Error("Hizmet bulunamadı.");
   }
 
-  const updates = pickFields(req.body, serviceFields);
+  const updates = validatePayload(
+    serviceUpdateSchema,
+    pickFields(req.body, serviceFields),
+    res
+  );
 
   if (
     Object.prototype.hasOwnProperty.call(updates, "slug") &&

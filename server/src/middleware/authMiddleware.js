@@ -22,9 +22,15 @@ export const protect = asyncHandler(async (req, res, next) => {
 
     const user = await User.findById(decoded.sub);
 
-    if (!user || !user.isActive) {
+    if (
+      !user ||
+      !user.isActive ||
+      user.role !== "admin"
+    ) {
       res.status(401);
-      throw new Error("Kullanıcı bulunamadı veya devre dışı.");
+      throw new Error(
+        "Kullanıcı bulunamadı, yetkisiz veya devre dışı."
+      );
     }
 
     req.user = user;

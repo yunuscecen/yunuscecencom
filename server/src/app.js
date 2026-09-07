@@ -38,7 +38,13 @@ app.use(
         return callback(null, true);
       }
 
-      return callback(new Error("Bu kaynaktan gelen isteğe izin verilmiyor."));
+      const corsError = new Error(
+        "Bu kaynaktan gelen isteğe izin verilmiyor."
+      );
+
+      corsError.statusCode = 403;
+
+      return callback(corsError);
     },
     credentials: true,
   })
@@ -87,8 +93,6 @@ app.use("/api/admin/dashboard", adminDashboardRoutes);
 app.use("/api/page-content", pageContentRoutes);
 app.use(seoRoutes);
 
-app.use(notFound);
-app.use(errorHandler);
 app.use(notFound);
 app.use(errorHandler);
 

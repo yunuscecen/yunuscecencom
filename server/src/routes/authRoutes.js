@@ -16,6 +16,7 @@ const loginLimiter = rateLimit({
   limit: 10,
   standardHeaders: "draft-7",
   legacyHeaders: false,
+  skipSuccessfulRequests: true,
   message: {
     success: false,
     message: "Çok fazla giriş denemesi yapıldı. Daha sonra tekrar deneyin.",

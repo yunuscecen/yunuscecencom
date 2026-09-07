@@ -1,7 +1,12 @@
 import Project from "../models/Project.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import pickFields from "../utils/pickFields.js";
+import validatePayload from "../utils/validatePayload.js";
 import { createUniqueSlug } from "../utils/slugify.js";
+import {
+  projectCreateSchema,
+  projectUpdateSchema,
+} from "../validators/projectValidators.js";
 
 const projectFields = [
   "title",
@@ -146,12 +151,11 @@ export const getAdminProjectById = asyncHandler(async (req, res) => {
 });
 
 export const createProject = asyncHandler(async (req, res) => {
-  const projectData = pickFields(req.body, projectFields);
-
-  if (!projectData.title) {
-    res.status(400);
-    throw new Error("Proje başlığı zorunludur.");
-  }
+  const projectData = validatePayload(
+    projectCreateSchema,
+    pickFields(req.body, projectFields),
+    res
+  );
 
   const requestedSlug = projectData.slug || projectData.title;
 
@@ -177,7 +181,11 @@ export const updateProject = asyncHandler(async (req, res) => {
     throw new Error("Proje bulunamadı.");
   }
 
-  const updates = pickFields(req.body, projectFields);
+  const updates = validatePayload(
+    projectUpdateSchema,
+    pickFields(req.body, projectFields),
+    res
+  );
 
   if (
     Object.prototype.hasOwnProperty.call(updates, "slug") &&
