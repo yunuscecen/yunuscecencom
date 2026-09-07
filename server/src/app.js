@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
 import authRoutes from "./routes/authRoutes.js";
 import contentRoutes from "./routes/contentRoutes.js";
+import projectRoutes from "./routes/projectRoutes.js";
+import adminProjectRoutes from "./routes/adminProjectRoutes.js";
 
 import {
   errorHandler,
@@ -54,9 +56,7 @@ const apiLimiter = rateLimit({
   },
 });
 
-app.use("/api", apiLimiter);
-app.use("/api/auth", authRoutes);
-app.use("/api/content", contentRoutes);
+
 
 app.get("/api/health", (req, res) => {
   res.status(200).json({
@@ -65,6 +65,14 @@ app.get("/api/health", (req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
+
+app.use("/api", apiLimiter);
+app.use("/api/auth", authRoutes);
+app.use("/api/content", contentRoutes);
+app.use("/api/projects", projectRoutes);
+app.use("/api/admin/projects", adminProjectRoutes);
+
+
 
 
 

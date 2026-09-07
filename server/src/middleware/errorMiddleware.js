@@ -11,6 +11,11 @@ export const errorHandler = (error, req, res, next) => {
   let statusCode = res.statusCode === 200 ? 500 : res.statusCode;
   let message = error.message || "Sunucu hatası oluştu.";
 
+if (error.name === "CastError") {
+  statusCode = 400;
+  message = "Geçersiz kayıt kimliği.";
+}
+
   if (error.name === "ValidationError") {
     statusCode = 400;
     message = Object.values(error.errors)
