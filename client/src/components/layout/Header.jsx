@@ -13,6 +13,11 @@ const Header = () => {
     .filter((item) => item.isVisible !== false)
     .sort((a, b) => a.order - b.order);
 
+  const contactHref =
+    settings.header?.contactHref || "/iletisim";
+
+  const contactIsExternal = /^https?:\/\//i.test(contactHref);
+
   useEffect(() => {
     setMenuOpen(false);
   }, [location.pathname]);
@@ -25,16 +30,70 @@ const Header = () => {
     };
   }, [menuOpen]);
 
+  const renderNavigationItem = (item, mobile = false) => {
+    const content = (
+      <>
+        {mobile && (
+          <span>
+            {String(
+              navigation.findIndex(
+                (navigationItem) =>
+                  navigationItem._id === item._id ||
+                  navigationItem.href === item.href
+              ) + 1
+            ).padStart(2, "0")}
+          </span>
+        )}
+
+        {item.label}
+      </>
+    );
+
+    if (item.isExternal) {
+      return (
+        <a
+          key={item._id || item.href}
+          href={item.href}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {content}
+        </a>
+      );
+    }
+
+    return (
+      <NavLink
+        key={item._id || item.href}
+        to={item.href}
+        className={({ isActive }) =>
+          isActive ? "is-active" : undefined
+        }
+      >
+        {content}
+      </NavLink>
+    );
+  };
+
   return (
     <header className="site-header">
       <div className="site-header__inner">
         <Link
           className="brand"
           to="/"
-          aria-label={`${settings.brand?.name || "Yunus Çeçen"} ana sayfa`}
+          aria-label={`${
+            settings.brand?.name || "Yunus Çeçen"
+          } ana sayfa`}
         >
           <span className="brand__mark">
-            {settings.brand?.shortName || "YÇ"}
+            {settings.brand?.logoUrl ? (
+              <img
+                src={settings.brand.logoUrl}
+                alt={settings.brand.logoAlt || ""}
+              />
+            ) : (
+              settings.brand?.shortName || "YÇ"
+            )}
           </span>
 
           <span className="brand__text">
@@ -43,35 +102,35 @@ const Header = () => {
           </span>
         </Link>
 
-        <nav className="desktop-navigation" aria-label="Ana navigasyon">
+        <nav
+          className="desktop-navigation"
+          aria-label="Ana navigasyon"
+        >
           {navigation.map((item) =>
-            item.isExternal ? (
-              <a
-                key={item._id || item.href}
-                href={item.href}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {item.label}
-              </a>
-            ) : (
-              <NavLink
-                key={item._id || item.href}
-                to={item.href}
-                className={({ isActive }) =>
-                  isActive ? "is-active" : undefined
-                }
-              >
-                {item.label}
-              </NavLink>
-            )
+            renderNavigationItem(item)
           )}
         </nav>
 
-        <Link className="header-contact" to="/iletisim">
-          Proje konuşalım
-          <ArrowUpRight size={17} aria-hidden="true" />
-        </Link>
+        {settings.header?.showContactButton !== false &&
+          (contactIsExternal ? (
+            <a
+              className="header-contact"
+              href={contactHref}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {settings.header?.contactLabel}
+              <ArrowUpRight size={17} aria-hidden="true" />
+            </a>
+          ) : (
+            <Link
+              className="header-contact"
+              to={contactHref}
+            >
+              {settings.header?.contactLabel}
+              <ArrowUpRight size={17} aria-hidden="true" />
+            </Link>
+          ))}
 
         <button
           className="menu-button"
@@ -79,7 +138,9 @@ const Header = () => {
           aria-label={menuOpen ? "Menüyü kapat" : "Menüyü aç"}
           aria-expanded={menuOpen}
           aria-controls="mobile-navigation"
-          onClick={() => setMenuOpen((current) => !current)}
+          onClick={() =>
+            setMenuOpen((current) => !current)
+          }
         >
           {menuOpen ? <X /> : <Menu />}
         </button>
@@ -92,15 +153,9 @@ const Header = () => {
         }`}
       >
         <nav aria-label="Mobil navigasyon">
-          {navigation.map((item, index) => (
-            <NavLink
-              key={item._id || item.href}
-              to={item.href}
-            >
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              {item.label}
-            </NavLink>
-          ))}
+          {navigation.map((item) =>
+            renderNavigationItem(item, true)
+          )}
         </nav>
 
         <p>{settings.contact?.availabilityText}</p>

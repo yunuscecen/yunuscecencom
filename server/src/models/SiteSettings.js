@@ -59,6 +59,7 @@ const siteSettingsSchema = new mongoose.Schema(
       unique: true,
       immutable: true,
     },
+
     brand: {
       name: {
         type: String,
@@ -80,11 +81,40 @@ const siteSettingsSchema = new mongoose.Schema(
         default: "",
         trim: true,
       },
+      logoPublicId: {
+        type: String,
+        default: "",
+        trim: true,
+      },
+      logoAlt: {
+        type: String,
+        default: "",
+        trim: true,
+      },
     },
+
+    header: {
+      contactLabel: {
+        type: String,
+        default: "Proje konuşalım",
+        trim: true,
+      },
+      contactHref: {
+        type: String,
+        default: "/iletisim",
+        trim: true,
+      },
+      showContactButton: {
+        type: Boolean,
+        default: true,
+      },
+    },
+
     navigation: {
       type: [navigationItemSchema],
       default: [],
     },
+
     contact: {
       email: {
         type: String,
@@ -108,10 +138,12 @@ const siteSettingsSchema = new mongoose.Schema(
         trim: true,
       },
     },
+
     socials: {
       type: [socialLinkSchema],
       default: [],
     },
+
     footer: {
       eyebrow: {
         type: String,
@@ -128,12 +160,23 @@ const siteSettingsSchema = new mongoose.Schema(
         default: "",
         trim: true,
       },
+      buttonLabel: {
+        type: String,
+        default: "İletişime geç",
+        trim: true,
+      },
+      buttonHref: {
+        type: String,
+        default: "/iletisim",
+        trim: true,
+      },
       copyrightText: {
         type: String,
         default: "Tüm hakları saklıdır.",
         trim: true,
       },
     },
+
     seo: {
       defaultTitle: {
         type: String,

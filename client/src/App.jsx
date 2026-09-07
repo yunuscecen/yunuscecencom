@@ -16,6 +16,8 @@ import AdminPlaceholderPage from "./pages/admin/AdminPlaceholderPage";
 import DashboardPage from "./pages/admin/DashboardPage";
 import AdminHomePage from "./pages/admin/AdminHomePage";
 import AdminAboutPage from "./pages/admin/AdminAboutPage";
+import AdminServicesPage from "./pages/admin/AdminServicesPage";
+import AdminSettingsPage from "./pages/admin/AdminSettingsPage";
 const NotFoundPage = () => (
   <section className="page-state">
     <span>404</span>
@@ -97,16 +99,7 @@ const App = () => {
             }
           />
 
-          <Route
-            path="services"
-            element={
-              <AdminPlaceholderPage
-                eyebrow="Content / Services"
-                title="Hizmetler"
-                description="Hizmet içeriklerini ve görsellerini yönetin."
-              />
-            }
-          />
+          <Route path="services" element={<AdminServicesPage />} />
 
           <Route
             path="messages"
@@ -124,16 +117,7 @@ const App = () => {
   element={<AdminMediaPage />}
 />
 
-          <Route
-            path="settings"
-            element={
-              <AdminPlaceholderPage
-                eyebrow="System / Settings"
-                title="Site Ayarları"
-                description="Header, footer ve iletişim bilgilerini yönetin."
-              />
-            }
-          />
+          <Route path="settings" element={<AdminSettingsPage />} />
         </Route>
       </Route>
     </Routes>

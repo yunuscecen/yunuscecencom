@@ -4,7 +4,7 @@ import Project from "../models/Project.js";
 import Service from "../models/Service.js";
 
 import asyncHandler from "../utils/asyncHandler.js";
-
+import SiteSettings from "../models/SiteSettings.js";
 import {
   deleteCloudinaryImage,
   listCloudinaryImages,
@@ -121,7 +121,16 @@ export const deleteMedia = asyncHandler(async (req, res) => {
       "Bu görsel sitede kullanılıyor. Önce bağlı olduğu içerikten kaldırın."
     );
   }
+const usedAsSiteLogo = await SiteSettings.exists({
+  "brand.logoPublicId": publicId,
+});
 
+if (usedAsSiteLogo) {
+  res.status(409);
+  throw new Error(
+    "Bu görsel site logosu olarak kullanıldığı için silinemez."
+  );
+}
   const result = await deleteCloudinaryImage(publicId);
 
   res.status(200).json({
