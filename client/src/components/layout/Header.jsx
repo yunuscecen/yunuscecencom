@@ -126,27 +126,50 @@ const Header = () => {
           )}
         </nav>
 
-        {showContactButton &&
-          (contactIsExternal ? (
-            <a
-              className="header-contact"
-              href={contactHref}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {contactLabel}
-              <ArrowUpRight size={17} aria-hidden="true" />
-            </a>
-          ) : (
-            <Link
-              className="header-contact"
-              to={contactHref}
-            >
-              {contactLabel}
-              <ArrowUpRight size={17} aria-hidden="true" />
-            </Link>
-          ))}
+     <div className="header-actions">
+  {showContactButton &&
+    (contactIsExternal ? (
+      <a
+        className="header-contact"
+        href={contactHref}
+        target="_blank"
+        rel="noreferrer"
+      >
+        {contactLabel}
+        <ArrowUpRight size={17} aria-hidden="true" />
+      </a>
+    ) : (
+      <Link
+        className="header-contact"
+        to={contactHref}
+      >
+        {contactLabel}
+        <ArrowUpRight size={17} aria-hidden="true" />
+      </Link>
+    ))}
 
+  <button
+    className="header-client-panel"
+    type="button"
+    aria-disabled="true"
+    aria-describedby="client-panel-tooltip"
+  >
+    <span
+      className="header-client-panel__dot"
+      aria-hidden="true"
+    />
+
+    <span>Müşteri Paneli</span>
+
+    <span
+      className="header-client-panel__tooltip"
+      id="client-panel-tooltip"
+      role="tooltip"
+    >
+      Yapım aşamasında
+    </span>
+  </button>
+</div>
         <button
           className="menu-button"
           type="button"

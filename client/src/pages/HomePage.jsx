@@ -13,6 +13,7 @@ import {
   SiMongodb,
   SiNodedotjs,
   SiReact,
+  SiTypescript,
   SiWordpress,
 } from "react-icons/si";
 
@@ -50,6 +51,11 @@ const technologyLogos = [
     name: "Node.js",
     category: "Runtime",
     Icon: SiNodedotjs,
+  },
+    {
+    name: "TypeScript",
+    category: "Language",
+    Icon: SiTypescript,
   },
   {
     name: "WordPress",
@@ -174,7 +180,7 @@ const HomePage = () => {
 
  const featuredProject = projects[0];
 const otherProjects = projects.slice(1);
-const currentYear = new Date().getFullYear();
+
 
 const advertisingPortfolio = mergeAdvertisingPortfolio(
   home.advertisingPortfolio
@@ -252,19 +258,14 @@ return (
           </div>
 
           <aside className="showcase__rail">
-            {(copy.railItems || []).map((item, index) => (
-              <article key={`${item.eyebrow}-${index}`}>
-                <span>{item.eyebrow}</span>
-                <h2>{item.title}</h2>
-                <p>{item.description}</p>
-              </article>
-            ))}
-
-            <div className="showcase__rail-footer">
-              <span>{settings.contact?.location}</span>
-              <span>{currentYear}</span>
-            </div>
-          </aside>
+  {(copy.railItems || []).map((item, index) => (
+    <article key={`${item.eyebrow}-${index}`}>
+      <span>{item.eyebrow}</span>
+      <h2>{item.title}</h2>
+      <p>{item.description}</p>
+    </article>
+  ))}
+</aside>
         </section>
       )}
       <section

@@ -79,7 +79,45 @@ const AdvertisingDesignsPage = () => {
         <span>
           {String(visibleProjects.length).padStart(2, "0")} koleksiyon
         </span>
-      </header>
+            </header>
+
+      <section
+        className="advertising-scope-note"
+        aria-labelledby="advertising-scope-title"
+      >
+        <div className="advertising-scope-note__meta">
+          <span>Scope / Creative</span>
+
+          <p>
+            <span aria-hidden="true" />
+            Görsel üretim odağı
+          </p>
+        </div>
+
+        <div className="advertising-scope-note__content">
+          <h2 id="advertising-scope-title">
+            Reklam iletişiminin görsel üretim tarafına
+            odaklanıyorum.
+          </h2>
+
+          <div>
+            <p>
+              Markanızın hedefleri, iletişim dili ve kampanya
+              brief’i doğrultusunda dijital reklam ve sosyal
+              medya görselleri tasarlıyorum.
+            </p>
+
+            <p>
+              Çalışma kapsamım reklam yönetiminden ziyade
+              kreatif üretime odaklanır. Medya planlama, reklam
+              hesabı kurulumu, bütçe yönetimi ve kampanya
+              optimizasyonu hizmet kapsamımda yer almaz.
+              Gerektiğinde markanızın pazarlama ekibi veya
+              çalıştığı ajansla koordineli şekilde ilerleyebilirim.
+            </p>
+          </div>
+        </div>
+      </section>
 
       {visibleProjects.length === 0 ? (
         <section className="catalog-state">
