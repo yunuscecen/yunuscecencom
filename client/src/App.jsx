@@ -15,6 +15,7 @@ import AdminLoginPage from "./pages/admin/AdminLoginPage";
 import AdminPlaceholderPage from "./pages/admin/AdminPlaceholderPage";
 import DashboardPage from "./pages/admin/DashboardPage";
 import AdminHomePage from "./pages/admin/AdminHomePage";
+import AdminAboutPage from "./pages/admin/AdminAboutPage";
 const NotFoundPage = () => (
   <section className="page-state">
     <span>404</span>
@@ -83,16 +84,7 @@ const App = () => {
 
          <Route path="home" element={<AdminHomePage />} />
 
-          <Route
-            path="about"
-            element={
-              <AdminPlaceholderPage
-                eyebrow="Content / About"
-                title="Hakkımda"
-                description="Profil, yetenekler ve deneyim içeriğini yönetin."
-              />
-            }
-          />
+          <Route path="about" element={<AdminAboutPage />} />
 
           <Route
             path="projects"

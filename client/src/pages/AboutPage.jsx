@@ -34,7 +34,53 @@ const AboutPage = () => {
 
     return () => controller.abort();
   }, []);
+useEffect(() => {
+  if (!about) return undefined;
 
+  const previousTitle = document.title;
+  const existingDescription = document.querySelector(
+    'meta[name="description"]'
+  );
+
+  const previousDescription =
+    existingDescription?.getAttribute("content") || "";
+
+  const metaDescription =
+    existingDescription || document.createElement("meta");
+
+  const createdMeta = !existingDescription;
+
+  if (createdMeta) {
+    metaDescription.setAttribute("name", "description");
+    document.head.appendChild(metaDescription);
+  }
+
+  const pageTitle =
+    about.seo?.title ||
+    `${about.title} | ${settings.brand?.name || "Portfolio"}`;
+
+  const pageDescription =
+    about.seo?.description || about.introduction || "";
+
+  document.title = pageTitle;
+
+  if (pageDescription) {
+    metaDescription.setAttribute("content", pageDescription);
+  }
+
+  return () => {
+    document.title = previousTitle;
+
+    if (createdMeta) {
+      metaDescription.remove();
+    } else {
+      metaDescription.setAttribute(
+        "content",
+        previousDescription
+      );
+    }
+  };
+}, [about, settings.brand?.name]);
   if (status === "loading") {
     return (
       <section className="page-state">
@@ -56,7 +102,9 @@ const AboutPage = () => {
   return (
     <div className="about-page">
       <header className="about-page__hero">
-        <p className="section-kicker">About / Profile</p>
+        <p className="section-kicker">
+  {about.eyebrow || "About / Profile"}
+</p>
 
         <div className="about-page__heading">
           <h1>{about.title}</h1>

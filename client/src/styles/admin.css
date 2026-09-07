@@ -1180,3 +1180,26 @@
     width: 100%;
   }
 }
+
+.admin-check-field {
+  width: max-content;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  color: #aeb7c5;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.admin-check-field input {
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  accent-color: #5f8dff;
+  cursor: pointer;
+}
+
+.admin-form-field input:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
