@@ -7,6 +7,19 @@ import {
   PenTool,
   Sparkles,
 } from "lucide-react";
+import {
+  SiExpress,
+  SiFigma,
+  SiMongodb,
+  SiNodedotjs,
+  SiReact,
+  SiWordpress,
+} from "react-icons/si";
+
+import {
+  DiIllustrator,
+  DiPhotoshop,
+} from "react-icons/di";
 import { Link } from "react-router-dom";
 import Seo from "../components/Seo";
 import ManagedImage from "../components/ui/ManagedImage";
@@ -17,7 +30,48 @@ import { mergeAdvertisingPortfolio } from "../data/advertisingPortfolio";
 
 
 const serviceIcons = [Braces, Layers3, PenTool, Sparkles];
-
+const technologyLogos = [
+  {
+    name: "MongoDB",
+    category: "Database",
+    Icon: SiMongodb,
+  },
+  {
+    name: "Express",
+    category: "Backend",
+    Icon: SiExpress,
+  },
+  {
+    name: "React",
+    category: "Frontend",
+    Icon: SiReact,
+  },
+  {
+    name: "Node.js",
+    category: "Runtime",
+    Icon: SiNodedotjs,
+  },
+  {
+    name: "WordPress",
+    category: "CMS",
+    Icon: SiWordpress,
+  },
+  {
+    name: "Figma",
+    category: "UI / UX",
+    Icon: SiFigma,
+  },
+  {
+  name: "Photoshop",
+  category: "Visual Design",
+  Icon: DiPhotoshop,
+},
+{
+  name: "Illustrator",
+  category: "Vector Design",
+  Icon: DiIllustrator,
+},
+];
 const renderHighlightedTitle = (title, highlightedText) => {
   if (!highlightedText || !title.includes(highlightedText)) {
     return title;
@@ -202,6 +256,33 @@ return (
           </aside>
         </section>
       )}
+      <section
+        className="technology-rail"
+        aria-label="Kullandığım teknolojiler ve tasarım araçları"
+      >
+        <div className="technology-rail__heading">
+          <span>Stack / Tools</span>
+
+          <p>
+            Development
+            <br />
+            × Creative
+          </p>
+        </div>
+
+        <div className="technology-rail__logos">
+          {technologyLogos.map(({ name, category, Icon }) => (
+            <div className="technology-logo" key={name}>
+              <Icon aria-hidden="true" />
+
+              <div>
+                <strong>{name}</strong>
+                <span>{category}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <section className="manifesto">
         <p className="section-kicker">{copy.manifestoKicker}</p>

@@ -11,6 +11,7 @@ const Footer = () => {
     .sort((a, b) => a.order - b.order);
 
   const currentYear = new Date().getFullYear();
+
   const buttonHref =
     settings.footer?.buttonHref || "/iletisim";
 
