@@ -310,14 +310,28 @@ return (
   name={settings.brand?.name}
 />
 
-<div className="showcase__portrait">
+<a
+  className="showcase__portrait"
+  href="https://github.com/yunuscecen"
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="Yunus Çeçen GitHub profilini yeni sekmede aç"
+  title="GitHub profilini aç"
+>
   <img
     src="/yunuscecen.jpeg"
     alt="Yunus Çeçen"
     width="96"
     height="96"
   />
-</div>
+
+  <span
+    className="showcase__portrait-link-indicator"
+    aria-hidden="true"
+  >
+    <SiGithub />
+  </span>
+</a>
 
 <nav
   className="showcase__socials notranslate"
