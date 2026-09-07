@@ -200,8 +200,13 @@ return (
 />
     {sectionIsVisible("hero") && (
         <section className="showcase">
-          <div className="showcase__canvas">
-            <div className="signal-field" aria-hidden="true">
+         <div className="showcase__canvas">
+  <div
+    className="showcase-hover-border"
+    aria-hidden="true"
+  />
+
+  <div className="signal-field" aria-hidden="true">
               <div className="signal-field__orbit" />
               <span className="signal-node signal-node--one" />
               <span className="signal-node signal-node--two" />
@@ -261,9 +266,14 @@ return (
           </div>
 
           <aside className="showcase__rail">
-  {(copy.railItems || []).map((item, index) => (
-    <article key={`${item.eyebrow}-${index}`}>
-      <span>{item.eyebrow}</span>
+ {(copy.railItems || []).map((item, index) => (
+  <article key={`${item.eyebrow}-${index}`}>
+    <div
+      className="showcase-hover-border"
+      aria-hidden="true"
+    />
+
+    <span>{item.eyebrow}</span>
       <h2>{item.title}</h2>
       <p>{item.description}</p>
     </article>
