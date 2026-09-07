@@ -6907,3 +6907,152 @@ body {
     animation: none;
   }
 }
+
+/* Stack / Tools — site geneline yayılan hover arka planı */
+
+body {
+  --site-tool-primary: 79, 124, 255;
+  --site-tool-secondary: 165, 108, 255;
+
+  position: relative;
+  isolation: isolate;
+}
+
+/* Tüm ekranı kaplayan dinamik degrade katmanı */
+
+body::before {
+  position: fixed;
+  inset: -10%;
+  z-index: 0;
+  background:
+    radial-gradient(
+      circle at 12% 22%,
+      rgba(var(--site-tool-primary), 0.11),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 88% 68%,
+      rgba(var(--site-tool-secondary), 0.085),
+      transparent 38%
+    ),
+    radial-gradient(
+      circle at 50% 105%,
+      rgba(var(--site-tool-primary), 0.055),
+      transparent 42%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(var(--site-tool-primary), 0.025),
+      transparent 45%,
+      rgba(var(--site-tool-secondary), 0.03)
+    );
+  filter: blur(10px);
+  opacity: 0;
+  pointer-events: none;
+  content: "";
+  transform: scale(0.96);
+  transition:
+    opacity 320ms ease,
+    transform 600ms ease;
+}
+
+/* Site içeriğini degrade katmanının üzerinde tutar */
+
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+/* Yalnızca gerçek mouse hover desteği olan cihazlarda çalışır */
+
+@media (hover: hover) and (pointer: fine) {
+  body:has(.technology-logo:hover)::before {
+    opacity: 1;
+    transform: scale(1);
+    animation: site-tool-background 7s ease-in-out infinite;
+  }
+}
+
+/* MongoDB */
+
+body:has(.technology-logo:nth-child(1):hover) {
+  --site-tool-primary: 71, 162, 72;
+  --site-tool-secondary: 18, 92, 49;
+}
+
+/* Express */
+
+body:has(.technology-logo:nth-child(2):hover) {
+  --site-tool-primary: 230, 232, 240;
+  --site-tool-secondary: 105, 110, 122;
+}
+
+/* React */
+
+body:has(.technology-logo:nth-child(3):hover) {
+  --site-tool-primary: 97, 218, 251;
+  --site-tool-secondary: 79, 124, 255;
+}
+
+/* Node.js */
+
+body:has(.technology-logo:nth-child(4):hover) {
+  --site-tool-primary: 95, 160, 78;
+  --site-tool-secondary: 35, 105, 63;
+}
+
+/* TypeScript */
+
+body:has(.technology-logo:nth-child(5):hover) {
+  --site-tool-primary: 49, 120, 198;
+  --site-tool-secondary: 71, 153, 237;
+}
+
+/* WordPress */
+
+body:has(.technology-logo:nth-child(6):hover) {
+  --site-tool-primary: 33, 117, 155;
+  --site-tool-secondary: 56, 88, 233;
+}
+
+/* Figma */
+
+body:has(.technology-logo:nth-child(7):hover) {
+  --site-tool-primary: 162, 89, 255;
+  --site-tool-secondary: 26, 188, 254;
+}
+
+/* Photoshop */
+
+body:has(.technology-logo:nth-child(8):hover) {
+  --site-tool-primary: 49, 168, 255;
+  --site-tool-secondary: 0, 64, 128;
+}
+
+/* Illustrator */
+
+body:has(.technology-logo:nth-child(9):hover) {
+  --site-tool-primary: 255, 154, 0;
+  --site-tool-secondary: 163, 70, 0;
+}
+
+@keyframes site-tool-background {
+  0%,
+  100% {
+    transform:
+      translate3d(-1%, 0, 0)
+      scale(0.98);
+  }
+
+  50% {
+    transform:
+      translate3d(1%, -1%, 0)
+      scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body:has(.technology-logo:hover)::before {
+    animation: none;
+  }
+}
