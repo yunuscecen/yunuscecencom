@@ -4,14 +4,19 @@ import { BrowserRouter } from "react-router-dom";
 
 import App from "./App";
 import { SiteProvider } from "./context/SiteContext";
+import { AuthProvider } from "./context/AuthContext";
+
 import "./index.css";
+import "./styles/admin.css";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-      <SiteProvider>
-        <App />
-      </SiteProvider>
+      <AuthProvider>
+        <SiteProvider>
+          <App />
+        </SiteProvider>
+      </AuthProvider>
     </BrowserRouter>
   </StrictMode>
 );

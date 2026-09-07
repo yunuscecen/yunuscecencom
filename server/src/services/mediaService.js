@@ -28,6 +28,23 @@ export const uploadImageBuffer = (buffer, folder) => {
   });
 };
 
+export const listCloudinaryImages = async (nextCursor) => {
+  const cloudinary = configureCloudinary();
+
+  const options = {
+    resource_type: "image",
+    type: "upload",
+    prefix: "yunuscecencom/",
+    max_results: 50,
+  };
+
+  if (nextCursor) {
+    options.next_cursor = nextCursor;
+  }
+
+  return cloudinary.api.resources(options);
+};
+
 export const deleteCloudinaryImage = async (publicId) => {
   const cloudinary = configureCloudinary();
 
