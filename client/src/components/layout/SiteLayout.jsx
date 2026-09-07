@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import Footer from "./Footer";
 import Header from "./Header";
 import ScrollProgressButton from "./ScrollProgressButton";
+import GoogleTranslateSwitcher from "./GoogleTranslateSwitcher";
 const SiteLayout = () => {
   return (
     <div className="site-shell" id="top">
@@ -16,8 +17,10 @@ const SiteLayout = () => {
         <Outlet />
       </main>
 
-      <Footer />
-      <ScrollProgressButton />
+     <Footer />
+
+<GoogleTranslateSwitcher />
+<ScrollProgressButton />
     </div>
   );
 };
