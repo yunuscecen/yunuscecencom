@@ -8,6 +8,10 @@ import authRoutes from "./routes/authRoutes.js";
 import contentRoutes from "./routes/contentRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
 import adminProjectRoutes from "./routes/adminProjectRoutes.js";
+import serviceRoutes from "./routes/serviceRoutes.js";
+import adminServiceRoutes from "./routes/adminServiceRoutes.js";
+import contactRoutes from "./routes/contactRoutes.js";
+import adminMessageRoutes from "./routes/adminMessageRoutes.js";
 
 import {
   errorHandler,
@@ -71,7 +75,10 @@ app.use("/api/auth", authRoutes);
 app.use("/api/content", contentRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/admin/projects", adminProjectRoutes);
-
+app.use("/api/services", serviceRoutes);
+app.use("/api/contact", contactRoutes);
+app.use("/api/admin/services", adminServiceRoutes);
+app.use("/api/admin/messages", adminMessageRoutes);
 
 
 
