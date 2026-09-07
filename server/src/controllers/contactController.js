@@ -69,7 +69,8 @@ const getPaginationValue = (value, fallback, maximum) => {
 
   return Math.min(Math.max(parsedValue, 1), maximum);
 };
-
+const escapeRegex = (value) =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 export const createContactMessage = asyncHandler(async (req, res) => {
   const result = contactSchema.safeParse(req.body);
 
@@ -197,3 +198,63 @@ export const deleteMessage = asyncHandler(async (req, res) => {
     message: "Mesaj kalıcı olarak silindi.",
   });
 });
+
+export const getAdminMessageStats = asyncHandler(
+  async (req, res) => {
+    const [statusSummary, recentMessages] =
+      await Promise.all([
+        ContactMessage.aggregate([
+          {
+            $group: {
+              _id: "$status",
+              count: {
+                $sum: 1,
+              },
+            },
+          },
+        ]),
+
+        ContactMessage.find()
+          .sort({
+            createdAt: -1,
+          })
+          .limit(5)
+          .select(
+            "name email company service status createdAt"
+          )
+          .lean(),
+      ]);
+
+    const counts = {
+      new: 0,
+      read: 0,
+      replied: 0,
+      archived: 0,
+    };
+
+    statusSummary.forEach((item) => {
+      if (
+        Object.prototype.hasOwnProperty.call(
+          counts,
+          item._id
+        )
+      ) {
+        counts[item._id] = item.count;
+      }
+    });
+
+    const total = Object.values(counts).reduce(
+      (sum, count) => sum + count,
+      0
+    );
+
+    res.status(200).json({
+      success: true,
+      data: {
+        total,
+        counts,
+        recentMessages,
+      },
+    });
+  }
+);
