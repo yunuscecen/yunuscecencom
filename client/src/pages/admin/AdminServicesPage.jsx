@@ -1,8 +1,13 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 import AdminMediaField from "../../components/admin/AdminMediaField";
 import http from "../../api/http";
 import { useConfirm } from "../../context/ConfirmContext";
+import useUnsavedChanges from "../../hooks/useUnsavedChanges";
 const emptyService = {
   title: "",
   slug: "",
@@ -74,7 +79,12 @@ const normalizeService = (service = {}) => ({
 const AdminServicesPage = () => {
 const confirm = useConfirm();
   const [services, setServices] = useState([]);
-  const [form, setForm] = useState(emptyService);
+  const [form, setForm] = useState(() =>
+    structuredClone(emptyService)
+  );
+  const [savedForm, setSavedForm] = useState(() =>
+    structuredClone(emptyService)
+  );
   const [editingId, setEditingId] = useState(null);
   const [originalPublicId, setOriginalPublicId] = useState("");
   const [editorOpen, setEditorOpen] = useState(false);
@@ -85,6 +95,15 @@ const confirm = useConfirm();
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState("");
   const [feedback, setFeedback] = useState(null);
+    const hasUnsavedChanges = useMemo(
+    () =>
+      JSON.stringify(form) !== JSON.stringify(savedForm),
+    [form, savedForm]
+  );
+
+  useUnsavedChanges(
+    editorOpen && hasUnsavedChanges && !saving
+  );
   const loadServices = async () => {
     try {
       setLoading(true);
@@ -122,11 +141,48 @@ const confirm = useConfirm();
     setFeedback(null);
   };
 
-  const openCreateEditor = () => {
-    setForm({
-      ...emptyService,
-      order: services.length,
+  const resetEditor = () => {
+    const nextForm = structuredClone(emptyService);
+
+    setEditorOpen(false);
+    setEditingId(null);
+    setOriginalPublicId("");
+    setSlugTouched(false);
+    setForm(nextForm);
+    setSavedForm(structuredClone(nextForm));
+  };
+
+  const confirmEditorChange = async () => {
+    if (
+      !editorOpen ||
+      !hasUnsavedChanges ||
+      saving
+    ) {
+      return true;
+    }
+
+    return confirm({
+      title: "Kaydedilmemiş değişiklikler silinsin mi?",
+      description:
+        "Hizmette yaptığın kaydedilmemiş değişiklikler kaybolacak.",
+      confirmLabel: "Değişiklikleri sil",
+      cancelLabel: "Düzenlemeye devam et",
+      tone: "danger",
     });
+  };
+
+  const openCreateEditor = async () => {
+    const canContinue = await confirmEditorChange();
+
+    if (!canContinue) return;
+
+    const nextForm = {
+      ...structuredClone(emptyService),
+      order: services.length,
+    };
+
+    setForm(nextForm);
+    setSavedForm(structuredClone(nextForm));
 
     setEditingId(null);
     setOriginalPublicId("");
@@ -135,10 +191,15 @@ const confirm = useConfirm();
     setFeedback(null);
   };
 
-  const openEditEditor = (service) => {
+  const openEditEditor = async (service) => {
+    const canContinue = await confirmEditorChange();
+
+    if (!canContinue) return;
+
     const normalizedService = normalizeService(service);
 
-    setForm(normalizedService);
+    setForm(structuredClone(normalizedService));
+    setSavedForm(structuredClone(normalizedService));
     setEditingId(service._id);
     setOriginalPublicId(
       normalizedService.coverImage?.publicId || ""
@@ -148,12 +209,12 @@ const confirm = useConfirm();
     setFeedback(null);
   };
 
-  const closeEditor = () => {
-    setEditorOpen(false);
-    setEditingId(null);
-    setOriginalPublicId("");
-    setSlugTouched(false);
-    setForm(emptyService);
+  const closeEditor = async () => {
+    const canClose = await confirmEditorChange();
+
+    if (!canClose) return;
+
+    resetEditor();
   };
 
   const handleTitleChange = (value) => {
@@ -264,7 +325,7 @@ const confirm = useConfirm();
       }
 
       await loadServices();
-      closeEditor();
+      resetEditor();
 
       setFeedback({
         type: cleanupWarning ? "warning" : "success",
@@ -328,7 +389,7 @@ const handleDelete = async (service) => {
     }
 
     if (editingId === service._id) {
-      closeEditor();
+      resetEditor();
     }
 
     await loadServices();

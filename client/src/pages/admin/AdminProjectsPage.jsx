@@ -1,10 +1,16 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import AdminGalleryField from "../../components/admin/AdminGalleryField";
 import AdminMediaField from "../../components/admin/AdminMediaField";
 import AdminStringListField from "../../components/admin/AdminStringListField";
 import { useConfirm } from "../../context/ConfirmContext";
 import http from "../../api/http";
+import useUnsavedChanges from "../../hooks/useUnsavedChanges";
 
 const categoryLabels = {
   "web-development": "Web Development",
@@ -153,7 +159,12 @@ const AdminProjectsPage = () => {
   const originalMediaIds = useRef([]);
 
   const [projects, setProjects] = useState([]);
-  const [form, setForm] = useState(emptyProject);
+  const [form, setForm] = useState(() =>
+    structuredClone(emptyProject)
+  );
+  const [savedForm, setSavedForm] = useState(() =>
+    structuredClone(emptyProject)
+  );
   const [editingId, setEditingId] = useState(null);
   const [editorOpen, setEditorOpen] = useState(false);
   const [slugTouched, setSlugTouched] = useState(false);
@@ -169,7 +180,15 @@ const AdminProjectsPage = () => {
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState("");
   const [feedback, setFeedback] = useState(null);
+  const hasUnsavedChanges = useMemo(
+    () =>
+      JSON.stringify(form) !== JSON.stringify(savedForm),
+    [form, savedForm]
+  );
 
+  useUnsavedChanges(
+    editorOpen && hasUnsavedChanges && !saving
+  );
   const loadProjects = async () => {
     try {
       setLoading(true);
@@ -237,11 +256,48 @@ const AdminProjectsPage = () => {
     setFeedback(null);
   };
 
-  const openCreateEditor = () => {
-    setForm({
-      ...emptyProject,
-      order: projects.length,
+  const resetEditor = () => {
+    const nextForm = structuredClone(emptyProject);
+
+    setEditorOpen(false);
+    setEditingId(null);
+    setSlugTouched(false);
+    setForm(nextForm);
+    setSavedForm(structuredClone(nextForm));
+    originalMediaIds.current = [];
+  };
+
+  const confirmEditorChange = async () => {
+    if (
+      !editorOpen ||
+      !hasUnsavedChanges ||
+      saving
+    ) {
+      return true;
+    }
+
+    return confirm({
+      title: "Kaydedilmemiş değişiklikler silinsin mi?",
+      description:
+        "Projede yaptığın kaydedilmemiş değişiklikler kaybolacak.",
+      confirmLabel: "Değişiklikleri sil",
+      cancelLabel: "Düzenlemeye devam et",
+      tone: "danger",
     });
+  };
+
+  const openCreateEditor = async () => {
+    const canContinue = await confirmEditorChange();
+
+    if (!canContinue) return;
+
+    const nextForm = {
+      ...structuredClone(emptyProject),
+      order: projects.length,
+    };
+
+    setForm(nextForm);
+    setSavedForm(structuredClone(nextForm));
 
     originalMediaIds.current = [];
 
@@ -251,10 +307,15 @@ const AdminProjectsPage = () => {
     setFeedback(null);
   };
 
-  const openEditEditor = (project) => {
+  const openEditEditor = async (project) => {
+    const canContinue = await confirmEditorChange();
+
+    if (!canContinue) return;
+
     const normalizedProject = normalizeProject(project);
 
-    setForm(normalizedProject);
+    setForm(structuredClone(normalizedProject));
+    setSavedForm(structuredClone(normalizedProject));
     setEditingId(project._id);
     setSlugTouched(true);
     setEditorOpen(true);
@@ -264,12 +325,12 @@ const AdminProjectsPage = () => {
       getMediaIds(normalizedProject);
   };
 
-  const closeEditor = () => {
-    setEditorOpen(false);
-    setEditingId(null);
-    setSlugTouched(false);
-    setForm(emptyProject);
-    originalMediaIds.current = [];
+  const closeEditor = async () => {
+    const canClose = await confirmEditorChange();
+
+    if (!canClose) return;
+
+    resetEditor();
   };
 
   const handleTitleChange = (value) => {
@@ -427,7 +488,7 @@ const AdminProjectsPage = () => {
         await deleteMediaIds(removedMediaIds);
 
       await loadProjects();
-      closeEditor();
+      resetEditor();
 
       setFeedback({
         type: cleanupWarning ? "warning" : "success",
@@ -478,7 +539,7 @@ const handleDelete = async (project) => {
       await deleteMediaIds(projectMediaIds);
 
     if (editingId === project._id) {
-      closeEditor();
+      resetEditor();
     }
 
     await loadProjects();

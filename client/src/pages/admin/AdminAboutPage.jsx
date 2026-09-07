@@ -1,7 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import AdminMediaField from "../../components/admin/AdminMediaField";
 import http from "../../api/http";
+import useUnsavedChanges from "../../hooks/useUnsavedChanges";
 
 const emptyAbout = {
   key: "main",
@@ -57,10 +63,25 @@ const mergeAboutData = (data = {}) => ({
 const AdminAboutPage = () => {
   const originalPublicId = useRef("");
 
-  const [form, setForm] = useState(emptyAbout);
+  const [form, setForm] = useState(() =>
+    structuredClone(emptyAbout)
+  );
+  const [savedForm, setSavedForm] = useState(() =>
+    structuredClone(emptyAbout)
+  );
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [feedback, setFeedback] = useState(null);
+
+  const hasUnsavedChanges = useMemo(
+    () =>
+      JSON.stringify(form) !== JSON.stringify(savedForm),
+    [form, savedForm]
+  );
+
+  useUnsavedChanges(
+    hasUnsavedChanges && !loading && !saving
+  );
 
   useEffect(() => {
     let active = true;
@@ -74,7 +95,9 @@ const AdminAboutPage = () => {
 
         if (!active) return;
 
-        setForm(aboutData);
+               setForm(structuredClone(aboutData));
+        setSavedForm(structuredClone(aboutData));
+
         originalPublicId.current =
           aboutData.profileImage?.publicId || "";
       } catch (error) {
@@ -334,7 +357,8 @@ const AdminAboutPage = () => {
       const response = await http.put("/content/about", payload);
       const savedAbout = mergeAboutData(extractData(response));
 
-      setForm(savedAbout);
+      setForm(structuredClone(savedAbout));
+      setSavedForm(structuredClone(savedAbout));
 
       const currentPublicId =
         savedAbout.profileImage?.publicId || "";

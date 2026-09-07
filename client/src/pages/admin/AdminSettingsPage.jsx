@@ -1,8 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import AdminMediaField from "../../components/admin/AdminMediaField";
 import { useSiteSettings } from "../../context/SiteContext";
 import http from "../../api/http";
+import useUnsavedChanges from "../../hooks/useUnsavedChanges";
 
 const defaultSettings = {
   key: "main",
@@ -99,10 +105,25 @@ const AdminSettingsPage = () => {
   const { replaceSettings } = useSiteSettings();
   const originalLogoPublicId = useRef("");
 
-  const [form, setForm] = useState(defaultSettings);
+  const [form, setForm] = useState(() =>
+    structuredClone(defaultSettings)
+  );
+  const [savedForm, setSavedForm] = useState(() =>
+    structuredClone(defaultSettings)
+  );
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [feedback, setFeedback] = useState(null);
+
+  const hasUnsavedChanges = useMemo(
+    () =>
+      JSON.stringify(form) !== JSON.stringify(savedForm),
+    [form, savedForm]
+  );
+
+  useUnsavedChanges(
+    hasUnsavedChanges && !loading && !saving
+  );
 
   useEffect(() => {
     let active = true;
@@ -114,7 +135,9 @@ const AdminSettingsPage = () => {
 
         if (!active) return;
 
-        setForm(settings);
+        setForm(structuredClone(settings));
+        setSavedForm(structuredClone(settings));
+
         originalLogoPublicId.current =
           settings.brand?.logoPublicId || "";
       } catch (error) {
@@ -340,7 +363,8 @@ const AdminSettingsPage = () => {
         extractData(response)
       );
 
-      setForm(savedSettings);
+      setForm(structuredClone(savedSettings));
+      setSavedForm(structuredClone(savedSettings));
       replaceSettings(savedSettings);
 
       const currentLogoPublicId =
