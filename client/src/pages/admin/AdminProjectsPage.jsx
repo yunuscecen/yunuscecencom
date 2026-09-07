@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import AdminGalleryField from "../../components/admin/AdminGalleryField";
 import AdminMediaField from "../../components/admin/AdminMediaField";
 import AdminStringListField from "../../components/admin/AdminStringListField";
+import { useConfirm } from "../../context/ConfirmContext";
 import http from "../../api/http";
 
 const categoryLabels = {
@@ -148,6 +149,7 @@ const deleteMediaIds = async (publicIds) => {
 };
 
 const AdminProjectsPage = () => {
+  const confirm = useConfirm();
   const originalMediaIds = useRef([]);
 
   const [projects, setProjects] = useState([]);
@@ -155,7 +157,7 @@ const AdminProjectsPage = () => {
   const [editingId, setEditingId] = useState(null);
   const [editorOpen, setEditorOpen] = useState(false);
   const [slugTouched, setSlugTouched] = useState(false);
-  const [deleteTarget, setDeleteTarget] = useState(null);
+  
 
   const [filters, setFilters] = useState({
     status: "",
@@ -165,7 +167,7 @@ const AdminProjectsPage = () => {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [deleting, setDeleting] = useState(false);
+  const [deletingId, setDeletingId] = useState("");
   const [feedback, setFeedback] = useState(null);
 
   const loadProjects = async () => {
@@ -446,48 +448,58 @@ const AdminProjectsPage = () => {
       setSaving(false);
     }
   };
+const handleDelete = async (project) => {
+  if (!project?._id) return;
 
-  const handleDelete = async () => {
-    if (!deleteTarget?._id) return;
+  const confirmed = await confirm({
+    title: `“${project.title}” silinsin mi?`,
+    description:
+      "Proje, kapak görseli ve galeri görselleri kalıcı olarak kaldırılacak. Bu işlem geri alınamaz.",
+    confirmLabel: "Projeyi sil",
+    cancelLabel: "Vazgeç",
+    tone: "danger",
+  });
 
-    try {
-      setDeleting(true);
-      setFeedback(null);
+  if (!confirmed) {
+    return;
+  }
 
-      const projectMediaIds =
-        getMediaIds(deleteTarget);
+  try {
+    setDeletingId(project._id);
+    setFeedback(null);
 
-      await http.delete(
-        `/admin/projects/${deleteTarget._id}`
-      );
+    const projectMediaIds = getMediaIds(project);
 
-      const cleanupWarning =
-        await deleteMediaIds(projectMediaIds);
+    await http.delete(
+      `/admin/projects/${project._id}`
+    );
 
-      if (editingId === deleteTarget._id) {
-        closeEditor();
-      }
+    const cleanupWarning =
+      await deleteMediaIds(projectMediaIds);
 
-      setDeleteTarget(null);
-      await loadProjects();
-
-      setFeedback({
-        type: cleanupWarning ? "warning" : "success",
-        message: cleanupWarning
-          ? "Proje silindi fakat bazı görseller medya arşivinden silinemedi."
-          : "Proje ve bağlı görseller başarıyla silindi.",
-      });
-    } catch (error) {
-      setFeedback({
-        type: "error",
-        message:
-          error.response?.data?.message ||
-          "Proje silinemedi.",
-      });
-    } finally {
-      setDeleting(false);
+    if (editingId === project._id) {
+      closeEditor();
     }
-  };
+
+    await loadProjects();
+
+    setFeedback({
+      type: cleanupWarning ? "warning" : "success",
+      message: cleanupWarning
+        ? "Proje silindi fakat bazı görseller medya arşivinden silinemedi."
+        : "Proje ve bağlı görseller başarıyla silindi.",
+    });
+  } catch (error) {
+    setFeedback({
+      type: "error",
+      message:
+        error.response?.data?.message ||
+        "Proje silinemedi.",
+    });
+  } finally {
+    setDeletingId("");
+  }
+};
 
   return (
     <div className="admin-editor">
@@ -656,14 +668,19 @@ const AdminProjectsPage = () => {
                           Düzenle
                         </button>
 
-                        <button
+                                                <button
                           className="is-danger"
                           type="button"
+                          disabled={
+                            deletingId === project._id
+                          }
                           onClick={() =>
-                            setDeleteTarget(project)
+                            handleDelete(project)
                           }
                         >
-                          Sil
+                          {deletingId === project._id
+                            ? "Siliniyor..."
+                            : "Sil"}
                         </button>
                       </div>
                     </div>
@@ -1065,57 +1082,7 @@ const AdminProjectsPage = () => {
         )}
       </div>
 
-      {deleteTarget && (
-        <div
-          className="admin-dialog-backdrop"
-          onMouseDown={() =>
-            !deleting && setDeleteTarget(null)
-          }
-        >
-          <div
-            className="admin-dialog"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="delete-project-title"
-            onMouseDown={(event) =>
-              event.stopPropagation()
-            }
-          >
-            <span className="admin-editor-eyebrow">
-              Silme onayı
-            </span>
-
-            <h2 id="delete-project-title">
-              “{deleteTarget.title}” silinsin mi?
-            </h2>
-
-            <p>
-              Proje, kapak görseli ve galeri görselleri kalıcı
-              olarak kaldırılacak.
-            </p>
-
-            <div className="admin-form-actions">
-              <button
-                className="admin-secondary-button"
-                type="button"
-                disabled={deleting}
-                onClick={() => setDeleteTarget(null)}
-              >
-                Vazgeç
-              </button>
-
-              <button
-                className="admin-danger-button"
-                type="button"
-                disabled={deleting}
-                onClick={handleDelete}
-              >
-                {deleting ? "Siliniyor..." : "Projeyi sil"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+    
     </div>
   );
 };

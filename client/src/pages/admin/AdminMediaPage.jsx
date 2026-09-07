@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 
 import http from "../../api/http";
+import { useConfirm } from "../../context/ConfirmContext";
 
 const allowedTypes = [
   "image/jpeg",
@@ -28,6 +29,7 @@ const formatBytes = (bytes) => {
 };
 
 const AdminMediaPage = () => {
+  const confirm = useConfirm();
   const fileInputRef = useRef(null);
 
   const [media, setMedia] = useState([]);
@@ -186,18 +188,26 @@ const AdminMediaPage = () => {
   };
 
   const handleDelete = async (image) => {
-    const confirmed = window.confirm(
-      "Bu görsel kalıcı olarak silinecek. Devam edilsin mi?"
-    );
+    if (!image?.publicId) return;
 
-    if (!confirmed) {
-      return;
-    }
+    const imageName =
+      image.publicId.split("/").at(-1) || "Seçilen görsel";
 
-    setDeletingId(image.publicId);
-    setFeedback(null);
+    const confirmed = await confirm({
+      title: `${imageName} silinsin mi?`,
+      description:
+        "Görsel Cloudinary hesabından kalıcı olarak kaldırılacak. Bu işlem geri alınamaz.",
+      confirmLabel: "Görseli sil",
+      cancelLabel: "Vazgeç",
+      tone: "danger",
+    });
+
+    if (!confirmed) return;
 
     try {
+      setDeletingId(image.publicId);
+      setFeedback(null);
+
       await http.delete("/admin/media", {
         data: {
           publicId: image.publicId,

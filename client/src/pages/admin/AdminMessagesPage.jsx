@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import http from "../../api/http";
-
+import { useConfirm } from "../../context/ConfirmContext";
 const statusLabels = {
   new: "Yeni",
   read: "Okundu",
@@ -64,10 +64,10 @@ const createReplyLink = (message) => {
 };
 
 const AdminMessagesPage = () => {
+  const confirm = useConfirm();
+
   const [messages, setMessages] = useState([]);
-  const [selectedMessage, setSelectedMessage] =
-    useState(null);
-  const [deleteTarget, setDeleteTarget] =
+   const [selectedMessage, setSelectedMessage] =
     useState(null);
 
   const [searchInput, setSearchInput] = useState("");
@@ -88,9 +88,8 @@ const AdminMessagesPage = () => {
     useState(false);
   const [statusUpdating, setStatusUpdating] =
     useState(false);
-  const [deleting, setDeleting] = useState(false);
+  const [deletingId, setDeletingId] = useState("");
   const [feedback, setFeedback] = useState(null);
-
   const loadStats = async () => {
     try {
       const response = await http.get(
@@ -298,26 +297,32 @@ const AdminMessagesPage = () => {
     }
   };
 
-  const handleDelete = async () => {
-    if (!deleteTarget?._id) return;
+  const handleDelete = async (message) => {
+    if (!message?._id) return;
+
+    const confirmed = await confirm({
+      title: `${message.name} tarafından gönderilen mesaj silinsin mi?`,
+      description:
+        "Mesaj kalıcı olarak kaldırılacak. Bu işlem geri alınamaz.",
+      confirmLabel: "Mesajı sil",
+      cancelLabel: "Vazgeç",
+      tone: "danger",
+    });
+
+    if (!confirmed) return;
 
     try {
-      setDeleting(true);
+      setDeletingId(message._id);
       setFeedback(null);
 
-      await http.delete(
-        `/admin/messages/${deleteTarget._id}`
-      );
+      await http.delete(`/admin/messages/${message._id}`);
 
-      if (selectedMessage?._id === deleteTarget._id) {
+      if (selectedMessage?._id === message._id) {
         setSelectedMessage(null);
       }
 
       const deletingLastItem =
-        messages.length === 1 &&
-        pagination.page > 1;
-
-      setDeleteTarget(null);
+        messages.length === 1 && pagination.page > 1;
 
       if (deletingLastItem) {
         setPagination((current) => ({
@@ -342,7 +347,7 @@ const AdminMessagesPage = () => {
           "Mesaj silinemedi.",
       });
     } finally {
-      setDeleting(false);
+      setDeletingId("");
     }
   };
 
@@ -694,14 +699,19 @@ const AdminMessagesPage = () => {
                 E-posta ile yanıtla
               </a>
 
-              <button
+                           <button
                 className="admin-secondary-button"
                 type="button"
+                disabled={
+                  deletingId === selectedMessage._id
+                }
                 onClick={() =>
-                  setDeleteTarget(selectedMessage)
+                  handleDelete(selectedMessage)
                 }
               >
-                Mesajı sil
+                {deletingId === selectedMessage._id
+                  ? "Siliniyor..."
+                  : "Mesajı sil"}
               </button>
             </div>
           </aside>
@@ -716,58 +726,7 @@ const AdminMessagesPage = () => {
         )}
       </div>
 
-      {deleteTarget && (
-        <div
-          className="admin-dialog-backdrop"
-          onMouseDown={() =>
-            !deleting && setDeleteTarget(null)
-          }
-        >
-          <div
-            className="admin-dialog"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="delete-message-title"
-            onMouseDown={(event) =>
-              event.stopPropagation()
-            }
-          >
-            <span className="admin-editor-eyebrow">
-              Silme onayı
-            </span>
-
-            <h2 id="delete-message-title">
-              {deleteTarget.name} tarafından gönderilen
-              mesaj silinsin mi?
-            </h2>
-
-            <p>
-              Mesaj kalıcı olarak kaldırılacak. Bu işlem geri
-              alınamaz.
-            </p>
-
-            <div className="admin-form-actions">
-              <button
-                className="admin-secondary-button"
-                type="button"
-                disabled={deleting}
-                onClick={() => setDeleteTarget(null)}
-              >
-                Vazgeç
-              </button>
-
-              <button
-                className="admin-danger-button"
-                type="button"
-                disabled={deleting}
-                onClick={handleDelete}
-              >
-                {deleting ? "Siliniyor..." : "Mesajı sil"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+     
     </div>
   );
 };

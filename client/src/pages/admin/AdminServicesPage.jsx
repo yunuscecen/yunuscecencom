@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import AdminMediaField from "../../components/admin/AdminMediaField";
 import http from "../../api/http";
-
+import { useConfirm } from "../../context/ConfirmContext";
 const emptyService = {
   title: "",
   slug: "",
@@ -72,19 +72,19 @@ const normalizeService = (service = {}) => ({
 });
 
 const AdminServicesPage = () => {
+const confirm = useConfirm();
   const [services, setServices] = useState([]);
   const [form, setForm] = useState(emptyService);
   const [editingId, setEditingId] = useState(null);
   const [originalPublicId, setOriginalPublicId] = useState("");
   const [editorOpen, setEditorOpen] = useState(false);
   const [slugTouched, setSlugTouched] = useState(false);
-  const [deleteTarget, setDeleteTarget] = useState(null);
+  
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [deleting, setDeleting] = useState(false);
+  const [deletingId, setDeletingId] = useState("");
   const [feedback, setFeedback] = useState(null);
-
   const loadServices = async () => {
     try {
       setLoading(true);
@@ -286,59 +286,70 @@ const AdminServicesPage = () => {
     }
   };
 
-  const handleDelete = async () => {
-    if (!deleteTarget?._id) return;
+const handleDelete = async (service) => {
+  if (!service?._id) return;
 
-    try {
-      setDeleting(true);
-      setFeedback(null);
+  const confirmed = await confirm({
+    title: `“${service.title}” silinsin mi?`,
+    description:
+      "Hizmet ve ona bağlı kapak görseli kalıcı olarak kaldırılacak. Bu işlem geri alınamaz.",
+    confirmLabel: "Hizmeti sil",
+    cancelLabel: "Vazgeç",
+    tone: "danger",
+  });
 
-      const deletedPublicId =
-        deleteTarget.coverImage?.publicId || "";
+  if (!confirmed) {
+    return;
+  }
 
-      await http.delete(
-        `/admin/services/${deleteTarget._id}`
-      );
+  try {
+    setDeletingId(service._id);
+    setFeedback(null);
 
-      let cleanupWarning = false;
+    const deletedPublicId =
+      service.coverImage?.publicId || "";
 
-      if (deletedPublicId) {
-        try {
-          await http.delete("/admin/media", {
-            data: {
-              publicId: deletedPublicId,
-            },
-          });
-        } catch {
-          cleanupWarning = true;
-        }
+    await http.delete(
+      `/admin/services/${service._id}`
+    );
+
+    let cleanupWarning = false;
+
+    if (deletedPublicId) {
+      try {
+        await http.delete("/admin/media", {
+          data: {
+            publicId: deletedPublicId,
+          },
+        });
+      } catch {
+        cleanupWarning = true;
       }
-
-      if (editingId === deleteTarget._id) {
-        closeEditor();
-      }
-
-      setDeleteTarget(null);
-      await loadServices();
-
-      setFeedback({
-        type: cleanupWarning ? "warning" : "success",
-        message: cleanupWarning
-          ? "Hizmet silindi fakat kapak görseli medya arşivinden silinemedi."
-          : "Hizmet başarıyla silindi.",
-      });
-    } catch (error) {
-      setFeedback({
-        type: "error",
-        message:
-          error.response?.data?.message ||
-          "Hizmet silinemedi.",
-      });
-    } finally {
-      setDeleting(false);
     }
-  };
 
+    if (editingId === service._id) {
+      closeEditor();
+    }
+
+    await loadServices();
+
+    setFeedback({
+      type: cleanupWarning ? "warning" : "success",
+      message: cleanupWarning
+        ? "Hizmet silindi fakat kapak görseli medya arşivinden silinemedi."
+        : "Hizmet başarıyla silindi.",
+    });
+  } catch (error) {
+    setFeedback({
+      type: "error",
+      message:
+        error.response?.data?.message ||
+        "Hizmet silinemedi.",
+    });
+  } finally {
+    setDeletingId("");
+  }
+};
   return (
     <div className="admin-editor">
       <header className="admin-editor-header">
@@ -463,15 +474,16 @@ const AdminServicesPage = () => {
                           Düzenle
                         </button>
 
-                        <button
-                          className="is-danger"
-                          type="button"
-                          onClick={() =>
-                            setDeleteTarget(service)
-                          }
-                        >
-                          Sil
-                        </button>
+                       <button
+  className="is-danger"
+  type="button"
+  disabled={deletingId === service._id}
+  onClick={() => handleDelete(service)}
+>
+  {deletingId === service._id
+    ? "Siliniyor..."
+    : "Sil"}
+</button>
                       </div>
                     </div>
                   </div>
@@ -709,56 +721,6 @@ const AdminServicesPage = () => {
         )}
       </div>
 
-      {deleteTarget && (
-        <div
-          className="admin-dialog-backdrop"
-          role="presentation"
-          onMouseDown={() =>
-            !deleting && setDeleteTarget(null)
-          }
-        >
-          <div
-            className="admin-dialog"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="delete-service-title"
-            onMouseDown={(event) => event.stopPropagation()}
-          >
-            <span className="admin-editor-eyebrow">
-              Silme onayı
-            </span>
-
-            <h2 id="delete-service-title">
-              “{deleteTarget.title}” silinsin mi?
-            </h2>
-
-            <p>
-              Hizmet siteden tamamen kaldırılacak. Bu işlem geri
-              alınamaz.
-            </p>
-
-            <div className="admin-form-actions">
-              <button
-                className="admin-secondary-button"
-                type="button"
-                disabled={deleting}
-                onClick={() => setDeleteTarget(null)}
-              >
-                Vazgeç
-              </button>
-
-              <button
-                className="admin-danger-button"
-                type="button"
-                disabled={deleting}
-                onClick={handleDelete}
-              >
-                {deleting ? "Siliniyor..." : "Hizmeti sil"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
