@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 
 import Footer from "./Footer";
 import Header from "./Header";
-
+import ScrollProgressButton from "./ScrollProgressButton";
 const SiteLayout = () => {
   return (
     <div className="site-shell" id="top">
@@ -17,6 +17,7 @@ const SiteLayout = () => {
       </main>
 
       <Footer />
+      <ScrollProgressButton />
     </div>
   );
 };
