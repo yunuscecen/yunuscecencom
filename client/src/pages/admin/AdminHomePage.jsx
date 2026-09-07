@@ -1,8 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import AdminMediaField from "../../components/admin/AdminMediaField";
 import http from "../../api/http";
-
+import useUnsavedChanges from "../../hooks/useUnsavedChanges";
 const defaultHome = {
   hero: {
     eyebrow: "",
@@ -123,11 +128,26 @@ const extractResponseData = (response) =>
 const AdminHomePage = () => {
   const originalPublicId = useRef("");
 
-  const [form, setForm] = useState(defaultHome);
+  const [form, setForm] = useState(() =>
+  structuredClone(defaultHome)
+);
+
+const [savedForm, setSavedForm] = useState(() =>
+  structuredClone(defaultHome)
+);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [feedback, setFeedback] = useState(null);
+const hasUnsavedChanges = useMemo(
+  () =>
+    JSON.stringify(form) !==
+    JSON.stringify(savedForm),
+  [form, savedForm]
+);
 
+useUnsavedChanges(
+  hasUnsavedChanges && !saving
+);
   useEffect(() => {
     let active = true;
 
@@ -140,7 +160,8 @@ const AdminHomePage = () => {
 
         if (!active) return;
 
-        setForm(homeData);
+        setForm(structuredClone(homeData));
+setSavedForm(structuredClone(homeData));
         originalPublicId.current =
           homeData.featuredMedia?.publicId || "";
       } catch (error) {
@@ -280,7 +301,8 @@ const AdminHomePage = () => {
       const response = await http.put("/content/home", form);
       const savedHome = mergeHomeData(extractResponseData(response));
 
-      setForm(savedHome);
+      setForm(structuredClone(savedHome));
+setSavedForm(structuredClone(savedHome));
 
       const currentPublicId =
         savedHome.featuredMedia?.publicId || "";
@@ -348,7 +370,7 @@ const AdminHomePage = () => {
           className="admin-primary-button"
           type="submit"
           form="admin-home-form"
-          disabled={saving}
+          disabled={saving || !hasUnsavedChanges}
         >
           {saving ? "Kaydediliyor..." : "Değişiklikleri kaydet"}
         </button>
@@ -967,7 +989,7 @@ const AdminHomePage = () => {
           <button
             className="admin-primary-button"
             type="submit"
-            disabled={saving}
+           disabled={saving || !hasUnsavedChanges}
           >
             {saving ? "Kaydediliyor..." : "Değişiklikleri kaydet"}
           </button>

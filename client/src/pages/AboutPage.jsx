@@ -70,13 +70,14 @@ const AboutPage = () => {
   return (
   <div className="about-page">
   <Seo
-    title={about.seo?.title || "Hakkımda"}
-    description={
-      about.seo?.description || about.introduction
-    }
-    image={about.profileImage?.url}
-    type="profile"
-  />
+  title={about.seo?.title || "Hakkımda"}
+  description={
+    about.seo?.description || about.introduction
+  }
+  image={about.profileImage?.url}
+  type="profile"
+  schemaType="Person"
+/>
       <header className="about-page__hero">
         <p className="section-kicker">
           {about.eyebrow || "About / Profile"}

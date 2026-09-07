@@ -15,6 +15,7 @@ import adminMessageRoutes from "./routes/adminMessageRoutes.js";
 import adminMediaRoutes from "./routes/adminMediaRoutes.js";
 import adminDashboardRoutes from "./routes/adminDashboardRoutes.js";
 import pageContentRoutes from "./routes/pageContentRoutes.js";
+import seoRoutes from "./routes/seoRoutes.js";
 import {
   errorHandler,
   notFound,
@@ -84,7 +85,10 @@ app.use("/api/admin/messages", adminMessageRoutes);
 app.use("/api/admin/media", adminMediaRoutes);
 app.use("/api/admin/dashboard", adminDashboardRoutes);
 app.use("/api/page-content", pageContentRoutes);
+app.use(seoRoutes);
 
+app.use(notFound);
+app.use(errorHandler);
 app.use(notFound);
 app.use(errorHandler);
 

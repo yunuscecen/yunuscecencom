@@ -123,11 +123,11 @@ const currentYear = new Date().getFullYear();
 return (
   <>
     <Seo
-      title={home.seo?.title}
-      description={home.seo?.description}
-      image={home.featuredMedia?.url}
-    />
-
+  title={home.seo?.title}
+  description={home.seo?.description}
+  image={home.featuredMedia?.url}
+  schemaType="WebSite"
+/>
     {sectionIsVisible("hero") && (
         <section className="showcase">
           <div className="showcase__canvas">

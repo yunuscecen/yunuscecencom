@@ -120,14 +120,15 @@ const ProjectDetailPage = () => {
   return (
    <article className="project-detail">
   <Seo
-    title={project.seo?.title || project.title}
-    description={
-      project.seo?.description ||
-      project.shortDescription
-    }
-    image={project.coverImage?.url}
-    type="article"
-  />
+  title={project.seo?.title || project.title}
+  description={
+    project.seo?.description ||
+    project.shortDescription
+  }
+  image={project.coverImage?.url}
+  type="article"
+  schemaType="CreativeWork"
+/>
       <header className="project-detail__hero">
         <Link className="back-link" to="/projeler">
           <ArrowLeft size={16} />

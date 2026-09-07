@@ -58,12 +58,13 @@ const ProjectsPage = () => {
 
   return (
   <div className="projects-page">
-  <Seo
-    title={copy.seo?.title || copy.title}
-    description={
-      copy.seo?.description || copy.description
-    }
-  />
+<Seo
+  title={copy.seo?.title || copy.title}
+  description={
+    copy.seo?.description || copy.description
+  }
+  schemaType="CollectionPage"
+/>
       <header className="projects-page__hero">
         <p className="section-kicker">{copy.heroKicker}</p>
 

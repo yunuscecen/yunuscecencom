@@ -135,9 +135,10 @@ const ContactPage = () => {
   return (
    <div className="contact-page">
   <Seo
-    title={copy.seo?.title || "İletişim"}
-    description={copy.seo?.description}
-  />
+  title={copy.seo?.title || "İletişim"}
+  description={copy.seo?.description}
+  schemaType="ContactPage"
+/>
       <header className="contact-page__hero">
         <p className="section-kicker">{copy.heroKicker}</p>
 

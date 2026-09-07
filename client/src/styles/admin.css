@@ -2703,3 +2703,14 @@
     grid-column: auto;
   }
 }
+
+.admin-primary-button:disabled,
+.admin-secondary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.admin-primary-button:disabled:hover,
+.admin-secondary-button:disabled:hover {
+  transform: none;
+}

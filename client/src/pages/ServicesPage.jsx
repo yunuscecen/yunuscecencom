@@ -67,12 +67,13 @@ const ServicesPage = () => {
 
   return (
    <div className="services-page">
-  <Seo
-    title={copy.seo?.title || copy.title}
-    description={
-      copy.seo?.description || copy.description
-    }
-  />
+ <Seo
+  title={copy.seo?.title || copy.title}
+  description={
+    copy.seo?.description || copy.description
+  }
+  schemaType="Service"
+/>
       <header className="services-page__hero">
         <p className="section-kicker">{copy.heroKicker}</p>
 

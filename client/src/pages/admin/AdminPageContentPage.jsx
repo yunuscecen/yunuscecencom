@@ -4,6 +4,7 @@ import { RotateCcw, Save } from "lucide-react";
 import http from "../../api/http";
 import { usePageContent } from "../../context/PageContentContext";
 import pageContentFields from "../../data/pageContentFields";
+import useUnsavedChanges from "../../hooks/useUnsavedChanges";
 
 const cloneContent = (value) => structuredClone(value);
 
@@ -49,12 +50,29 @@ const AdminPageContentPage = () => {
 
   const [activeSection, setActiveSection] = useState("home");
   const [draft, setDraft] = useState(() => cloneContent(content));
+  const [savedContent, setSavedContent] = useState(() =>
+  cloneContent(content)
+);
   const [saveStatus, setSaveStatus] = useState("idle");
   const [feedback, setFeedback] = useState("");
 
-  useEffect(() => {
-    setDraft(cloneContent(content));
-  }, [content]);
+const hasUnsavedChanges = useMemo(
+  () =>
+    JSON.stringify(draft) !==
+    JSON.stringify(savedContent),
+  [draft, savedContent]
+);
+
+useUnsavedChanges(
+  hasUnsavedChanges && saveStatus !== "saving"
+);
+
+useEffect(() => {
+  const nextContent = cloneContent(content);
+
+  setDraft(nextContent);
+  setSavedContent(cloneContent(nextContent));
+}, [content]);
 
   const currentSection = useMemo(
     () =>
@@ -71,12 +89,11 @@ const AdminPageContentPage = () => {
 
     setFeedback("");
   };
-
-  const handleReset = () => {
-    setDraft(cloneContent(content));
-    setFeedback("Kaydedilmemiş değişiklikler geri alındı.");
-    setSaveStatus("idle");
-  };
+const handleReset = () => {
+  setDraft(cloneContent(savedContent));
+  setFeedback("Kaydedilmemiş değişiklikler geri alındı.");
+  setSaveStatus("idle");
+};
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -94,8 +111,13 @@ const AdminPageContentPage = () => {
         contact: draft.contact,
       });
 
-      replaceContent(response.data.data);
-      setSaveStatus("success");
+     const savedData = cloneContent(response.data.data);
+
+setDraft(savedData);
+setSavedContent(cloneContent(savedData));
+replaceContent(savedData);
+
+setSaveStatus("success");
       setFeedback(
         response.data.message ||
           "Sayfa metinleri başarıyla kaydedildi."
@@ -144,7 +166,9 @@ const AdminPageContentPage = () => {
             className="admin-secondary-button"
             type="button"
             onClick={handleReset}
-            disabled={saveStatus === "saving"}
+            disabled={
+  saveStatus === "saving" || !hasUnsavedChanges
+}
           >
             <RotateCcw size={16} />
             Değişiklikleri geri al
@@ -154,7 +178,9 @@ const AdminPageContentPage = () => {
             className="admin-primary-button"
             type="submit"
             form="page-content-form"
-            disabled={saveStatus === "saving"}
+           disabled={
+  saveStatus === "saving" || !hasUnsavedChanges
+}
           >
             <Save size={16} />
             {saveStatus === "saving"
