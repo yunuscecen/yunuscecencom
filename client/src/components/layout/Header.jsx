@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { ArrowUpRight, Menu, X } from "lucide-react";
+import {
+  ArrowUpRight,
+  Menu,
+  Moon,
+  Sun,
+  X,
+} from "lucide-react";
 import BrandName from "../ui/BrandName";
 import { useSiteSettings } from "../../context/SiteContext";
-
+import { useTheme } from "../../context/ThemeContext";
 const Header = () => {
   const { settings } = useSiteSettings();
   const location = useLocation();
+  const { theme, toggleTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
 const [scrolled, setScrolled] = useState(false);
   const navigation = [...(settings.navigation || [])]
@@ -151,7 +158,7 @@ useEffect(() => {
           )}
         </nav>
 
-     <div className="header-actions">
+<div className="header-actions">
   {showContactButton &&
     (contactIsExternal ? (
       <a
@@ -161,7 +168,10 @@ useEffect(() => {
         rel="noreferrer"
       >
         {contactLabel}
-        <ArrowUpRight size={17} aria-hidden="true" />
+        <ArrowUpRight
+          size={17}
+          aria-hidden="true"
+        />
       </a>
     ) : (
       <Link
@@ -169,7 +179,10 @@ useEffect(() => {
         to={contactHref}
       >
         {contactLabel}
-        <ArrowUpRight size={17} aria-hidden="true" />
+        <ArrowUpRight
+          size={17}
+          aria-hidden="true"
+        />
       </Link>
     ))}
 
@@ -194,19 +207,51 @@ useEffect(() => {
       Yapım aşamasında
     </span>
   </button>
+
+  <button
+    className="theme-toggle"
+    type="button"
+    aria-label={
+      theme === "dark"
+        ? "Açık temaya geç"
+        : "Koyu temaya geç"
+    }
+    aria-pressed={theme === "light"}
+    aria-describedby="theme-toggle-tooltip"
+    onClick={toggleTheme}
+  >
+    {theme === "dark" ? (
+      <Sun size={16} aria-hidden="true" />
+    ) : (
+      <Moon size={16} aria-hidden="true" />
+    )}
+
+    <span
+      className="theme-toggle__tooltip"
+      id="theme-toggle-tooltip"
+      role="tooltip"
+    >
+      {theme === "dark"
+        ? "Açık tema"
+        : "Koyu tema"}
+    </span>
+  </button>
+
+  <button
+    className="menu-button"
+    type="button"
+    aria-label={
+      menuOpen ? "Menüyü kapat" : "Menüyü aç"
+    }
+    aria-expanded={menuOpen}
+    aria-controls="mobile-navigation"
+    onClick={() =>
+      setMenuOpen((current) => !current)
+    }
+  >
+    {menuOpen ? <X /> : <Menu />}
+  </button>
 </div>
-        <button
-          className="menu-button"
-          type="button"
-          aria-label={menuOpen ? "Menüyü kapat" : "Menüyü aç"}
-          aria-expanded={menuOpen}
-          aria-controls="mobile-navigation"
-          onClick={() =>
-            setMenuOpen((current) => !current)
-          }
-        >
-          {menuOpen ? <X /> : <Menu />}
-        </button>
       </div>
 
       <div
