@@ -5,7 +5,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
 import authRoutes from "./routes/authRoutes.js";
-
+import contentRoutes from "./routes/contentRoutes.js";
 
 import {
   errorHandler,
@@ -56,7 +56,7 @@ const apiLimiter = rateLimit({
 
 app.use("/api", apiLimiter);
 app.use("/api/auth", authRoutes);
-
+app.use("/api/content", contentRoutes);
 
 app.get("/api/health", (req, res) => {
   res.status(200).json({
