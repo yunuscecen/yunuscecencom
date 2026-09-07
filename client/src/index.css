@@ -3079,3 +3079,33 @@ body {
   cursor: wait;
   opacity: 0.55;
 }
+
+
+.app-error-boundary {
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.app-error-boundary > p {
+  width: min(100%, 38rem);
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.app-error-boundary__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-top: 1.75rem;
+}
+
+.app-error-boundary__actions .light-button {
+  cursor: pointer;
+}
+
+@media (max-width: 560px) {
+  .app-error-boundary__actions {
+    flex-direction: column;
+  }
+}

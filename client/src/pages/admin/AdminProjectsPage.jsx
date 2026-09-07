@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -189,7 +190,7 @@ const AdminProjectsPage = () => {
   useUnsavedChanges(
     editorOpen && hasUnsavedChanges && !saving
   );
-  const loadProjects = async () => {
+  const loadProjects = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -198,6 +199,7 @@ const AdminProjectsPage = () => {
           ...(filters.status && {
             status: filters.status,
           }),
+
           ...(filters.category && {
             category: filters.category,
           }),
@@ -215,11 +217,11 @@ const AdminProjectsPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters.status, filters.category]);
 
   useEffect(() => {
     loadProjects();
-  }, [filters.status, filters.category]);
+  }, [loadProjects]);
 
   const visibleProjects = projects.filter((project) =>
     project.title

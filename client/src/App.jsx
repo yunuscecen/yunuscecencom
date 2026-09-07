@@ -1,8 +1,14 @@
-import { Route, Routes } from "react-router-dom";
+import {
+  Link,
+  Navigate,
+  Route,
+  Routes,
+} from "react-router-dom";
 
 import AdminLayout from "./components/admin/AdminLayout";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 import SiteLayout from "./components/layout/SiteLayout";
+import Seo from "./components/Seo";
 
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
@@ -10,17 +16,18 @@ import HomePage from "./pages/HomePage";
 import ProjectDetailPage from "./pages/ProjectDetailPage";
 import ProjectsPage from "./pages/ProjectsPage";
 import ServicesPage from "./pages/ServicesPage";
-import AdminMediaPage from "./pages/admin/AdminMediaPage";
-import AdminLoginPage from "./pages/admin/AdminLoginPage";
-import Seo from "./components/Seo";
-import DashboardPage from "./pages/admin/DashboardPage";
-import AdminHomePage from "./pages/admin/AdminHomePage";
+
 import AdminAboutPage from "./pages/admin/AdminAboutPage";
-import AdminServicesPage from "./pages/admin/AdminServicesPage";
-import AdminSettingsPage from "./pages/admin/AdminSettingsPage";
-import AdminProjectsPage from "./pages/admin/AdminProjectsPage";
+import AdminHomePage from "./pages/admin/AdminHomePage";
+import AdminLoginPage from "./pages/admin/AdminLoginPage";
+import AdminMediaPage from "./pages/admin/AdminMediaPage";
 import AdminMessagesPage from "./pages/admin/AdminMessagesPage";
 import AdminPageContentPage from "./pages/admin/AdminPageContentPage";
+import AdminProjectsPage from "./pages/admin/AdminProjectsPage";
+import AdminServicesPage from "./pages/admin/AdminServicesPage";
+import AdminSettingsPage from "./pages/admin/AdminSettingsPage";
+import DashboardPage from "./pages/admin/DashboardPage";
+
 const NotFoundPage = () => (
   <>
     <Seo
@@ -33,9 +40,9 @@ const NotFoundPage = () => (
       <span>404</span>
       <h1>Bu sayfa bulunamadı.</h1>
 
-      <a className="light-button" href="/">
+      <Link className="light-button" to="/">
         Ana sayfaya dön
-      </a>
+      </Link>
     </section>
   </>
 );
@@ -43,7 +50,6 @@ const NotFoundPage = () => (
 const App = () => {
   return (
     <Routes>
-      {/* Ziyaretçi sayfaları */}
       <Route element={<SiteLayout />}>
         <Route index element={<HomePage />} />
 
@@ -78,13 +84,11 @@ const App = () => {
         />
       </Route>
 
-      {/* Admin giriş sayfası */}
       <Route
         path="/admin/login"
         element={<AdminLoginPage />}
       />
 
-      {/* Giriş gerektiren admin sayfaları */}
       <Route element={<ProtectedRoute />}>
         <Route
           path="/admin"
@@ -94,27 +98,56 @@ const App = () => {
             index
             element={<DashboardPage />}
           />
-<Route
-  path="sayfa-metinleri"
-  element={<AdminPageContentPage />}
-/>
-         <Route path="home" element={<AdminHomePage />} />
-
-          <Route path="about" element={<AdminAboutPage />} />
-
-         <Route path="projects" element={<AdminProjectsPage />} />
-
-          <Route path="services" element={<AdminServicesPage />} />
-
-          <Route path="messages" element={<AdminMessagesPage />} />
-          
 
           <Route
-  path="media"
-  element={<AdminMediaPage />}
-/>
+            path="sayfa-metinleri"
+            element={<AdminPageContentPage />}
+          />
 
-          <Route path="settings" element={<AdminSettingsPage />} />
+          <Route
+            path="home"
+            element={<AdminHomePage />}
+          />
+
+          <Route
+            path="about"
+            element={<AdminAboutPage />}
+          />
+
+          <Route
+            path="projects"
+            element={<AdminProjectsPage />}
+          />
+
+          <Route
+            path="services"
+            element={<AdminServicesPage />}
+          />
+
+          <Route
+            path="messages"
+            element={<AdminMessagesPage />}
+          />
+
+          <Route
+            path="media"
+            element={<AdminMediaPage />}
+          />
+
+          <Route
+            path="settings"
+            element={<AdminSettingsPage />}
+          />
+
+          <Route
+            path="*"
+            element={
+              <Navigate
+                to="/admin"
+                replace
+              />
+            }
+          />
         </Route>
       </Route>
     </Routes>

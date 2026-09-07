@@ -1,4 +1,8 @@
-import { useEffect, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
 import http from "../../api/http";
 import { useConfirm } from "../../context/ConfirmContext";
@@ -112,7 +116,7 @@ const AdminMessagesPage = () => {
     }
   };
 
-  const loadMessages = async () => {
+  const loadMessages = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -156,7 +160,13 @@ const AdminMessagesPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [
+    pagination.page,
+    pagination.limit,
+    filters.status,
+    filters.service,
+    filters.search,
+  ]);
 
   useEffect(() => {
     loadStats();
@@ -164,12 +174,7 @@ const AdminMessagesPage = () => {
 
   useEffect(() => {
     loadMessages();
-  }, [
-    pagination.page,
-    filters.status,
-    filters.service,
-    filters.search,
-  ]);
+  }, [loadMessages]);
 
   const handleSearch = (event) => {
     event.preventDefault();
