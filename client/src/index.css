@@ -8680,3 +8680,27 @@ html[data-theme="light"]
   .technology-logo:nth-child(7):focus-visible span {
   color: var(--muted);
 }
+
+/* Admin galeri toplu görsel yükleme alanı */
+
+.admin-gallery-editor__bulk-upload {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  padding: 1rem;
+  border: 1px dashed var(--line);
+  border-radius: 0.85rem;
+  background: rgba(79, 124, 255, 0.035);
+}
+
+.admin-gallery-editor__bulk-upload
+  .admin-add-button {
+  justify-self: start;
+}
+
+.admin-gallery-editor__bulk-upload
+  .admin-field-note,
+.admin-gallery-editor__bulk-upload
+  .admin-inline-error {
+  margin: 0;
+}
