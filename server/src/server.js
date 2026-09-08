@@ -15,9 +15,9 @@ const startServer = async () => {
     configureCloudinary();
     await connectDB();
 
-    server = app.listen(port, () => {
-      console.log(`API http://localhost:${port} adresinde çalışıyor.`);
-    });
+   server = app.listen(port, "0.0.0.0", () => {
+  console.log(`API ${port} portunda çalışıyor.`);
+});
   } catch (error) {
     console.error(`Sunucu başlatılamadı: ${error.message}`);
     process.exit(1);

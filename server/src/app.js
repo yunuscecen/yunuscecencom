@@ -22,7 +22,9 @@ import {
 } from "./middleware/errorMiddleware.js";
 
 const app = express();
-
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1);
+}
 const allowedOrigins = (
   process.env.CLIENT_URL || "http://localhost:5173"
 )

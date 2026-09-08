@@ -35,7 +35,7 @@ const refreshAccessToken = () => {
 const http = axios.create({
   baseURL,
   withCredentials: true,
-  timeout: 15000,
+ timeout: 75000,
 });
 
 http.interceptors.request.use((config) => {
