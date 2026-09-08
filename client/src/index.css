@@ -8396,6 +8396,23 @@ html[data-theme="light"] .adfolio-preview {
     var(--light-panel);
 }
 
+/* TAM OLARAK BURAYA EKLE */
+
+html[data-theme="light"] .adfolio-card__overlay {
+  background: linear-gradient(
+    180deg,
+    transparent 58%,
+    rgba(5, 6, 9, 0.06) 72%,
+    rgba(5, 6, 9, 0.46) 100%
+  );
+}
+
+html[data-theme="light"] .adfolio-card__overlay h3 {
+  color: #ffffff;
+}
+
+/* BU BÖLÜM ZATEN DOSYADA VAR */
+
 html[data-theme="light"]
   .advertising-scope-note {
   background:
@@ -8405,9 +8422,6 @@ html[data-theme="light"]
       transparent 48%
     ),
     var(--light-panel);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.8),
-    0 2rem 5rem rgba(38, 45, 65, 0.07);
 }
 
 html[data-theme="light"]
