@@ -312,7 +312,7 @@ const GoogleTranslateSwitcher = () => {
           </div>
 
           <p className="language-menu__credit">
-            Powered by Google Translate
+            Powered by Google Translate 
           </p>
         </div>
       )}

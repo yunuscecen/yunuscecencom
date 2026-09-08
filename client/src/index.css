@@ -8529,3 +8529,59 @@ html[data-theme="light"]
     transition: none;
   }
 }
+
+/* Light Mode — Figma kartı hover düzeltmesi */
+
+html[data-theme="light"]
+  .technology-logo:nth-child(7)::after {
+  background:
+    radial-gradient(
+      circle at 15% 15%,
+      rgba(242, 78, 30, 0.14),
+      transparent 38%
+    ),
+    radial-gradient(
+      circle at 85% 20%,
+      rgba(162, 89, 255, 0.16),
+      transparent 38%
+    ),
+    radial-gradient(
+      circle at 20% 90%,
+      rgba(10, 207, 131, 0.11),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 90% 85%,
+      rgba(26, 188, 254, 0.13),
+      transparent 42%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.9),
+      rgba(245, 242, 252, 0.88)
+    );
+}
+
+html[data-theme="light"]
+  .technology-logo:nth-child(7):hover svg,
+html[data-theme="light"]
+  .technology-logo:nth-child(7):focus-visible svg {
+  color: #7951cf;
+  filter: drop-shadow(
+    0 0 0.7rem rgba(162, 89, 255, 0.28)
+  );
+}
+
+html[data-theme="light"]
+  .technology-logo:nth-child(7):hover strong,
+html[data-theme="light"]
+  .technology-logo:nth-child(7):focus-visible strong {
+  color: var(--text);
+}
+
+html[data-theme="light"]
+  .technology-logo:nth-child(7):hover span,
+html[data-theme="light"]
+  .technology-logo:nth-child(7):focus-visible span {
+  color: var(--muted);
+}
