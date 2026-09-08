@@ -85,16 +85,18 @@ const isBehanceUrl = (value, pathnamePattern) => {
   }
 };
 
-const isBehanceImageUrl = (value) => {
+const isValidCoverUrl = (value) => {
   if (!value) return false;
+
+  // Public klasöründeki site içi görsellere izin verir.
+  if (/^\/(?!\/)/.test(value)) {
+    return true;
+  }
 
   try {
     const parsedUrl = new URL(value);
 
-    return (
-      parsedUrl.protocol === "https:" &&
-      parsedUrl.hostname.endsWith(".behance.net")
-    );
+    return parsedUrl.protocol === "https:";
   } catch {
     return false;
   }
@@ -132,15 +134,16 @@ const advertisingProjectSchema = new mongoose.Schema(
         message: "Geçerli bir Behance embed adresi girin.",
       },
     },
-    coverUrl: {
-      type: String,
-      required: true,
-      trim: true,
-      validate: {
-        validator: isBehanceImageUrl,
-        message: "Kapak görseli Behance üzerinden gelmelidir.",
-      },
-    },
+   coverUrl: {
+  type: String,
+  required: true,
+  trim: true,
+  validate: {
+    validator: isValidCoverUrl,
+    message:
+      "Geçerli bir HTTPS veya site içi kapak görseli adresi girin.",
+  },
+},
     order: {
       type: Number,
       default: 0,
@@ -209,8 +212,7 @@ const advertisingPortfolioSchema = new mongoose.Schema(
             "https://www.behance.net/gallery/211707071/AdFolio-Advertising-Social-Media-Design",
           embedUrl:
             "https://www.behance.net/embed/project/211707071?ilo0=1",
-          coverUrl:
-            "https://mir-s3-cdn-cf.behance.net/projects/max_808/96fadd211707071.Y3JvcCw4MDgsNjMyLDAsMA.png",
+          coverUrl: "/images/adfolio/adfolio-01.png",
           order: 1,
           isVisible: true,
         },
@@ -221,8 +223,8 @@ const advertisingPortfolioSchema = new mongoose.Schema(
             "https://www.behance.net/gallery/211707899/AdFolio-Advertising-Social-Media-Design",
           embedUrl:
             "https://www.behance.net/embed/project/211707899?ilo0=1",
-          coverUrl:
-            "https://mir-s3-cdn-cf.behance.net/projects/max_808/472eb1211707899.Y3JvcCw4MDgsNjMyLDAsMA.png",
+           coverUrl: "/images/adfolio/adfolio-01.png",
+           
           order: 2,
           isVisible: true,
         },

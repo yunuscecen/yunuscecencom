@@ -18,8 +18,7 @@ export const advertisingPortfolioFallback = {
         "https://www.behance.net/gallery/211707071/AdFolio-Advertising-Social-Media-Design",
       embedUrl:
         "https://www.behance.net/embed/project/211707071?ilo0=1",
-      coverUrl:
-        "https://mir-s3-cdn-cf.behance.net/projects/max_808/96fadd211707071.Y3JvcCw4MDgsNjMyLDAsMA.png",
+     coverUrl: "/images/adfolio/adfolio-01.png",
       order: 1,
       isVisible: true,
     },
@@ -30,8 +29,7 @@ export const advertisingPortfolioFallback = {
         "https://www.behance.net/gallery/211707899/AdFolio-Advertising-Social-Media-Design",
       embedUrl:
         "https://www.behance.net/embed/project/211707899?ilo0=1",
-      coverUrl:
-        "https://mir-s3-cdn-cf.behance.net/projects/max_808/472eb1211707899.Y3JvcCw4MDgsNjMyLDAsMA.png",
+     coverUrl: "/images/adfolio/adfolio-02.png",
       order: 2,
       isVisible: true,
     },

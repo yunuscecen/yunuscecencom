@@ -609,7 +609,7 @@ setSavedForm(structuredClone(savedHome));
             <label className="admin-form-field">
               <span>Proje adresi</span>
               <input
-                type="url"
+                type="text"
                 value={project.projectUrl || ""}
                 onChange={(event) =>
                   updateAdvertisingProject(
@@ -637,10 +637,10 @@ setSavedForm(structuredClone(savedHome));
             </label>
 
             <label className="admin-form-field">
-              <span>Behance kapak adresi</span>
-              <input
-                type="url"
-                value={project.coverUrl || ""}
+              <span>Kapak görseli adresi</span>
+<input
+  type="text"
+  value={project.coverUrl || ""}
                 onChange={(event) =>
                   updateAdvertisingProject(
                     index,
