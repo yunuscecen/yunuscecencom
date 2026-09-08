@@ -136,14 +136,27 @@ const ProjectDetailPage = () => {
         </Link>
 
         <div>
-          <p className="section-kicker">
-            {categoryLabels[project.category] ||
-              project.category}
-          </p>
+  <p className="section-kicker">
+    {categoryLabels[project.category] ||
+      project.category}
+  </p>
 
-          <h1>{project.title}</h1>
-          <p>{project.shortDescription}</p>
-        </div>
+  <h1>{project.title}</h1>
+
+  <p>{project.shortDescription}</p>
+
+  {project.links?.live && (
+    <a
+      className="light-button project-detail__hero-link"
+      href={project.links.live}
+      target="_blank"
+      rel="noreferrer"
+    >
+      {copy.liveLinkLabel || "Canlı ön izleme"}
+      <ArrowUpRight size={15} />
+    </a>
+  )}
+</div>
 
         {project.year && (
           <span className="project-detail__year">
