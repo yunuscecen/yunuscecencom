@@ -3169,7 +3169,7 @@ body {
   position: relative;
   min-height: clamp(22rem, 39vw, 38rem);
   overflow: hidden;
-  border: 1px solid var(--line);
+ border: 3px solid transparent;
   border-radius: 1.25rem;
   background: var(--surface);
   transform: rotate(-1deg);
@@ -3192,7 +3192,88 @@ body {
 .adfolio-card:nth-child(2):hover {
   transform: translateY(-0.75rem) rotate(0);
 }
+/* AdFolio kartlarına özel degrade çerçeveler */
 
+.adfolio-card {
+  --adfolio-border: linear-gradient(
+    135deg,
+    rgba(79, 124, 255, 0.25),
+    rgba(92, 225, 255, 0.9),
+    rgba(156, 92, 255, 0.7)
+  );
+  --adfolio-glow: rgba(70, 137, 255, 0.12);
+  --adfolio-glow-hover: rgba(70, 137, 255, 0.28);
+
+  border-color: transparent;
+  background:
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    var(--adfolio-border) border-box;
+  background-size:
+    100% 100%,
+    220% 220%;
+  background-position:
+    center,
+    0% 50%;
+  box-shadow:
+    0 1.5rem 4.5rem var(--adfolio-glow),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+  animation: adfolio-border-flow 9s ease-in-out infinite;
+}
+
+.adfolio-card:nth-child(1) {
+  --adfolio-border: linear-gradient(
+    125deg,
+    rgba(66, 104, 255, 0.25),
+    #53d7ff,
+    #597dff,
+    rgba(145, 88, 255, 0.75)
+  );
+  --adfolio-glow: rgba(54, 132, 255, 0.13);
+  --adfolio-glow-hover: rgba(54, 156, 255, 0.3);
+}
+
+.adfolio-card:nth-child(2) {
+  --adfolio-border: linear-gradient(
+    125deg,
+    rgba(100, 79, 255, 0.28),
+    #a95cff,
+    #f05cae,
+    rgba(71, 211, 255, 0.75)
+  );
+  --adfolio-glow: rgba(178, 75, 255, 0.12);
+  --adfolio-glow-hover: rgba(211, 75, 210, 0.27);
+
+  animation-delay: -4.5s;
+}
+
+.adfolio-card:hover {
+  border-color: transparent;
+  box-shadow:
+    0 2rem 6rem var(--adfolio-glow-hover),
+    0 0 2.25rem var(--adfolio-glow),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+@keyframes adfolio-border-flow {
+  0%,
+  100% {
+    background-position:
+      center,
+      0% 50%;
+  }
+
+  50% {
+    background-position:
+      center,
+      100% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .adfolio-card {
+    animation: none;
+  }
+}
 .adfolio-card > img {
   width: 100%;
   height: 100%;
