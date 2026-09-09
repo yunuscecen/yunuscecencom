@@ -35,7 +35,7 @@ const capabilities = [
 
 const skillGroups = [
   {
-    title: "Development",
+    title: "Yazılım Geliştirme",
     skills: [
       "JavaScript",
       "TypeScript",
@@ -48,7 +48,7 @@ const skillGroups = [
     ],
   },
   {
-    title: "Web Solutions",
+    title: "Web Tasarım",
     skills: [
       "WordPress",
       "Responsive Design",
@@ -59,7 +59,7 @@ const skillGroups = [
     ],
   },
   {
-    title: "Design",
+    title: "Grafik Tasarım",
     skills: [
       "Figma",
       "Photoshop",
