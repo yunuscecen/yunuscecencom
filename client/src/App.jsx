@@ -13,6 +13,7 @@ import Seo from "./components/Seo";
 import AboutPage from "./pages/AboutPage";
 import AdvertisingDesignsPage from "./pages/AdvertisingDesignsPage";
 import ContactPage from "./pages/ContactPage";
+import CvPage from "./pages/CvPage";
 import HomePage from "./pages/HomePage";
 import ProjectDetailPage from "./pages/ProjectDetailPage";
 import ProjectsPage from "./pages/ProjectsPage";
@@ -78,7 +79,10 @@ const App = () => {
   path="reklam-tasarimlari"
   element={<AdvertisingDesignsPage />}
 />
-
+<Route
+  path="cv"
+  element={<CvPage />}
+/>
 <Route
   path="iletisim"
   element={<ContactPage />}
