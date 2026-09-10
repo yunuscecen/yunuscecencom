@@ -129,20 +129,29 @@ const CvPage = () => {
         </div>
 
         <div className="cv-page__hero-actions">
-          <a
-            className="light-button"
-            href="/documents/Yunus-Cecen-CV.pdf"
-            download="Yunus-Cecen-CV.pdf"
-          >
-            PDF indir
-            <Download size={16} aria-hidden="true" />
-          </a>
+  <a
+    className="light-button"
+    href="/documents/yunus-cecen-tr.pdf"
+    download="yunus-cecen-tr.pdf"
+  >
+    CV — TR
+    <Download size={16} aria-hidden="true" />
+  </a>
 
-          <Link className="cv-page__contact-link" to="/iletisim">
-            İletişime geç
-            <ArrowUpRight size={16} aria-hidden="true" />
-          </Link>
-        </div>
+  <a
+    className="light-button"
+    href="/documents/yunus-cecen-en.pdf"
+    download="yunus-cecen-en.pdf"
+  >
+    CV — EN
+    <Download size={16} aria-hidden="true" />
+  </a>
+
+  <Link className="cv-page__contact-link" to="/iletisim">
+    İletişime geç
+    <ArrowUpRight size={16} aria-hidden="true" />
+  </Link>
+</div>
       </header>
 
       <article className="cv-document">
